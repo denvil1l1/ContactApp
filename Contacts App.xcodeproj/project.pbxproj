@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8650504A28F7EB9C0081FC47 /* NavigationBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650504928F7EB9C0081FC47 /* NavigationBarController.swift */; };
+		8650504C28F7ED420081FC47 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650504B28F7ED420081FC47 /* Resources.swift */; };
+		8650504E28F7EE320081FC47 /* UIColor + hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650504D28F7EE320081FC47 /* UIColor + hex.swift */; };
 		86CBFC0A28F75D2F0021E6AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CBFC0928F75D2F0021E6AB /* AppDelegate.swift */; };
 		86CBFC0C28F75D2F0021E6AB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CBFC0B28F75D2F0021E6AB /* SceneDelegate.swift */; };
 		86CBFC1328F75D300021E6AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86CBFC1228F75D300021E6AB /* Assets.xcassets */; };
@@ -35,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8650504928F7EB9C0081FC47 /* NavigationBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarController.swift; sourceTree = "<group>"; };
+		8650504B28F7ED420081FC47 /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Resources.swift; path = "Contacts App/Resources/Resources.swift"; sourceTree = SOURCE_ROOT; };
+		8650504D28F7EE320081FC47 /* UIColor + hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + hex.swift"; sourceTree = "<group>"; };
 		86CBFC0628F75D2F0021E6AB /* Contacts App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		86CBFC0928F75D2F0021E6AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		86CBFC0B28F75D2F0021E6AB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -151,6 +157,7 @@
 		86F99CFA28F75F4E0005C253 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				8650504D28F7EE320081FC47 /* UIColor + hex.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -160,6 +167,7 @@
 			children = (
 				86CBFC1728F75D300021E6AB /* Info.plist */,
 				86CBFC1428F75D300021E6AB /* LaunchScreen.storyboard */,
+				8650504B28F7ED420081FC47 /* Resources.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -168,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				86F99D0128F7684B0005C253 /* UITableView.swift */,
+				8650504928F7EB9C0081FC47 /* NavigationBarController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -303,8 +312,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				86CBFC0A28F75D2F0021E6AB /* AppDelegate.swift in Sources */,
+				8650504A28F7EB9C0081FC47 /* NavigationBarController.swift in Sources */,
 				86CBFC0C28F75D2F0021E6AB /* SceneDelegate.swift in Sources */,
+				8650504C28F7ED420081FC47 /* Resources.swift in Sources */,
 				86F99D0228F7684B0005C253 /* UITableView.swift in Sources */,
+				8650504E28F7EE320081FC47 /* UIColor + hex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
