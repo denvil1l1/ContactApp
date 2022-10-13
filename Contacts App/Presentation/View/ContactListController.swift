@@ -1,22 +1,23 @@
 import UIKit
-struct UserInformation {
-    var name:String
-    var surname:String
-    var phone:String
-    var email:String
-}
-
 class ContactListController: UIViewController {
     var myTableView = UITableView()
     let identifire = "MyCell"
     //Создаем массив структур
     var userInformation = [UserInformation(name: "Alex", surname: "Chrome", phone: "89289636616", email: "vlad@mail.ru") ]
     var total = 0
-        
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Bar Items"
         createTable()
-        navigationController?.navigationBar
+        configureNavigationBar()
+    }
+    private func configureNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .add, target: self, action: #selector(onAddTap))
+        navigationItem.title = "Nav bar"
+    }
+    @objc func onAddTap () {
+        print("123")
     }
     func createTable() {
         self.myTableView = UITableView(frame: view.bounds, style: .plain)
@@ -24,7 +25,6 @@ class ContactListController: UIViewController {
         self.myTableView.delegate = self
         self.myTableView.dataSource = self
         myTableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
         view.addSubview(myTableView)
     }
 }
