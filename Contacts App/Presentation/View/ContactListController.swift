@@ -8,7 +8,6 @@ class ContactListController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Bar Items"
-        
         createTable()
         configureNavigationBar()
     }
