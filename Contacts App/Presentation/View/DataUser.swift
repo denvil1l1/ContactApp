@@ -3,8 +3,10 @@ struct Contact {
     var surname: String
     var phone: String
     var email: String
-    static func generalContacts() -> [Contact] {
-        var contact = [Contact(name: "Alex", surname: "Chrome", phone: "89289636616", email: "vlad@mail.ru"), Contact(name: "Alex2", surname: "Chrome", phone: "89289636616", email: "vlad@mail.ru"), Contact(name: "Alex3", surname: "Chrome", phone: "89289636616", email: "vlad@mail.ru"), Contact(name: "Alex4", surname: "Chrome", phone: "89289636616", email: "vlad@mail.ru"), Contact(name: "Alex5", surname: "Chrome", phone: "89289636616", email: "vlad@mail.ru")]
-        return (contact)
+}
+extension Contact {
+    static func generateContact() -> [Contact] {
+        let contact = [Contact (name: "Alex", surname: "Petrov", phone: "89289636616", email: "letme"), Contact(name: "Dima", surname: "Komarov", phone: "89289636616", email: "letme"), Contact(name: "Vlad", surname: "Smirnov", phone: "89289636616", email: "letme"), Contact(name: "Petr", surname: "Covrov", phone: "89289636616", email: "letme"), Contact(name: "Maria", surname: "Soldatenko", phone: "89289636616", email: "letme")]
+        return contact
     }
 }
