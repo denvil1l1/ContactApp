@@ -1,9 +1,10 @@
 import UIKit
+
 class ContactListController: UIViewController {
     var myTableView = UITableView()
     let identifire = "MyCell"
     //Создаем массив структур
-    var userInformation = [UserInformation(name: "Alex", surname: "Chrome", phone: "89289636616", email: "vlad@mail.ru") ]
+    var userInformation = Contact.generalContacts()
     var total = 0
     override func viewDidLoad() {
         super.viewDidLoad()
