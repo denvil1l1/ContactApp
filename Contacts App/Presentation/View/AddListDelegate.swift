@@ -1,6 +1,5 @@
 import Foundation
 
 protocol AddListInputDelegate: AnyObject {
-    
-    func setupData(with CellDataArray: ([ViewModel]))
+    func setupData(with cellDataArray: ([ViewModel]))
 }

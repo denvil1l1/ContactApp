@@ -1,14 +1,12 @@
 import Foundation
 
 struct ViewModel {
-    
     var cellType: DetailCellType
     var viewModel: Any
     var cellSize: CGSize
 }
 
 enum DetailCellType {
-    
     case name
     case surname
     case middleName
@@ -20,7 +18,6 @@ enum DetailCellType {
 }
 
 struct ContactCreate {
-    
     var name: String
     var surname: String
     var middleName: String

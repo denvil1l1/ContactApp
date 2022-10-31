@@ -1,7 +1,6 @@
 import UIKit
 
 class AddContactsController: UIViewController {
-    
     private enum Constants {
         
         static let textField = "nameTextCell"
@@ -59,8 +58,8 @@ class AddContactsController: UIViewController {
 
 //MARK: - AddListInputDelegate
 extension AddContactsController:  AddListInputDelegate {
-    func setupData(with CellDataArray: ([ViewModel])) {
-        self.dataSourse = CellDataArray
+    func setupData(with cellDataArray: ([ViewModel])) {
+        self.dataSourse = cellDataArray
         
     }
 }
