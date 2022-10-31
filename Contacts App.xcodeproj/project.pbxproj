@@ -11,6 +11,11 @@
 		8650504E28F7EE320081FC47 /* UIColor + hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650504D28F7EE320081FC47 /* UIColor + hex.swift */; };
 		8650505428F7FA7F0081FC47 /* ContactListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650505328F7FA7F0081FC47 /* ContactListController.swift */; };
 		8650505828F857830081FC47 /* DataUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650505728F857830081FC47 /* DataUser.swift */; };
+		869253D329082A2500E66AC1 /* AddContactsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869253D229082A2500E66AC1 /* AddContactsController.swift */; };
+		869253D529082B3A00E66AC1 /* AddListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869253D429082B3A00E66AC1 /* AddListPresenter.swift */; };
+		8694757E29090AB300E81586 /* AddListDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694757D29090AB300E81586 /* AddListDelegate.swift */; };
+		869475802909290800E81586 /* TextFieldCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694757F2909290800E81586 /* TextFieldCollectionViewCell.swift */; };
+		86947582290960BA00E81586 /* CreateContactDataUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86947581290960BA00E81586 /* CreateContactDataUser.swift */; };
 		86A4490428F97AD400DCFEB3 /* ContactListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A4490328F97AD400DCFEB3 /* ContactListPresenter.swift */; };
 		86A4490628F97DB200DCFEB3 /* ContactListInputDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A4490528F97DB200DCFEB3 /* ContactListInputDelegate.swift */; };
 		86CBFC0A28F75D2F0021E6AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CBFC0928F75D2F0021E6AB /* AppDelegate.swift */; };
@@ -44,6 +49,11 @@
 		8650504D28F7EE320081FC47 /* UIColor + hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + hex.swift"; sourceTree = "<group>"; };
 		8650505328F7FA7F0081FC47 /* ContactListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListController.swift; sourceTree = "<group>"; };
 		8650505728F857830081FC47 /* DataUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DataUser.swift; path = "Contacts App/Presentation/ContactList/View/DataUser.swift"; sourceTree = SOURCE_ROOT; };
+		869253D229082A2500E66AC1 /* AddContactsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactsController.swift; sourceTree = "<group>"; };
+		869253D429082B3A00E66AC1 /* AddListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListPresenter.swift; sourceTree = "<group>"; };
+		8694757D29090AB300E81586 /* AddListDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListDelegate.swift; sourceTree = "<group>"; };
+		8694757F2909290800E81586 /* TextFieldCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCollectionViewCell.swift; sourceTree = "<group>"; };
+		86947581290960BA00E81586 /* CreateContactDataUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateContactDataUser.swift; sourceTree = "<group>"; };
 		86A4490328F97AD400DCFEB3 /* ContactListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListPresenter.swift; sourceTree = "<group>"; };
 		86A4490528F97DB200DCFEB3 /* ContactListInputDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListInputDelegate.swift; sourceTree = "<group>"; };
 		86CBFC0628F75D2F0021E6AB /* Contacts App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,11 +94,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		869253D1290829FC00E66AC1 /* AddContacts */ = {
+			isa = PBXGroup;
+			children = (
+				869253D229082A2500E66AC1 /* AddContactsController.swift */,
+				8694757F2909290800E81586 /* TextFieldCollectionViewCell.swift */,
+				869253D429082B3A00E66AC1 /* AddListPresenter.swift */,
+			);
+			path = AddContacts;
+			sourceTree = "<group>";
+		};
 		86B2282829065A8C0095CFD2 /* ContactList */ = {
 			isa = PBXGroup;
 			children = (
-				86A4490328F97AD400DCFEB3 /* ContactListPresenter.swift */,
 				8650505328F7FA7F0081FC47 /* ContactListController.swift */,
+				86A4490328F97AD400DCFEB3 /* ContactListPresenter.swift */,
 				86B2282929065B030095CFD2 /* View */,
 			);
 			path = ContactList;
@@ -164,8 +184,9 @@
 		86F99CF728F75F0D0005C253 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				86B2282829065A8C0095CFD2 /* ContactList */,
+				869253D1290829FC00E66AC1 /* AddContacts */,
 				86F99D0028F7682C0005C253 /* View */,
+				86B2282829065A8C0095CFD2 /* ContactList */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -199,6 +220,8 @@
 		86F99D0028F7682C0005C253 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				8694757D29090AB300E81586 /* AddListDelegate.swift */,
+				86947581290960BA00E81586 /* CreateContactDataUser.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -334,11 +357,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				86A4490628F97DB200DCFEB3 /* ContactListInputDelegate.swift in Sources */,
+				869253D329082A2500E66AC1 /* AddContactsController.swift in Sources */,
+				869475802909290800E81586 /* TextFieldCollectionViewCell.swift in Sources */,
 				8650505428F7FA7F0081FC47 /* ContactListController.swift in Sources */,
 				8650505828F857830081FC47 /* DataUser.swift in Sources */,
+				8694757E29090AB300E81586 /* AddListDelegate.swift in Sources */,
 				86CBFC0A28F75D2F0021E6AB /* AppDelegate.swift in Sources */,
 				86CBFC0C28F75D2F0021E6AB /* SceneDelegate.swift in Sources */,
+				869253D529082B3A00E66AC1 /* AddListPresenter.swift in Sources */,
 				8650504C28F7ED420081FC47 /* Resources.swift in Sources */,
+				86947582290960BA00E81586 /* CreateContactDataUser.swift in Sources */,
 				8650504E28F7EE320081FC47 /* UIColor + hex.swift in Sources */,
 				86A4490428F97AD400DCFEB3 /* ContactListPresenter.swift in Sources */,
 			);

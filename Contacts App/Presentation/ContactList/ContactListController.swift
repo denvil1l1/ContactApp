@@ -54,6 +54,7 @@ class ContactListController: UIViewController {
         presenter?.viewisready()
     }
     
+    //MARK: - NavigationBar
     private func configureNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add, target: self, action: #selector(onAddTap))
@@ -73,7 +74,8 @@ class ContactListController: UIViewController {
     
     // MARK: - ButtonForNewController
     @objc func onAddTap () {
-        ///
+        let vc = AddContactsController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
