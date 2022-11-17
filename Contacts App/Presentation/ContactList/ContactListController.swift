@@ -1,16 +1,16 @@
 import UIKit
 
-private enum Constants {
-    static let trash = "trash"
-    static let identifier = "MyCell"
-    static let search = "Search"
-    static let heightForRowAt = 50
-    static let trashColor = UIColor(red: 48/255, green: 194/255, blue: 208/255, alpha: 1.0)
-    static let aletNo = "No"
-    static let aletYes = "Yes"
-}
-
 class ContactListController: UIViewController {
+    
+    private enum Constants {
+        static let trash = "trash"
+        static let identifier = "MyCell"
+        static let search = "Search"
+        static let heightForRowAt = 50
+        static let trashColor = UIColor(red: 48 / 255, green: 194 / 255, blue: 208 / 255, alpha: 1.0)
+        static let aletNo = "No"
+        static let aletYes = "Yes"
+    }
     
     // MARK: - AddPresenter
     var presenter: ContactListPresenter?
@@ -22,6 +22,7 @@ class ContactListController: UIViewController {
         presenter.view = vc
         return vc
     }
+    
     var dataSourse: [String] = []
     
     // MARK: - TableViewConfiguration
@@ -46,7 +47,7 @@ class ContactListController: UIViewController {
         return searchController
     }()
     
-    //MARK: - OvverideFunc
+    // MARK: - OvverideFunc
     override func viewDidLoad() {
         super.viewDidLoad()
         layoytTableView()
@@ -54,7 +55,7 @@ class ContactListController: UIViewController {
         presenter?.viewisready()
     }
     
-    //MARK: - NavigationBar
+    // MARK: - NavigationBar
     private func configureNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add, target: self, action: #selector(onAddTap))
@@ -73,7 +74,8 @@ class ContactListController: UIViewController {
     }
     
     // MARK: - ButtonForNewController
-    @objc func onAddTap () {
+    @objc
+    func onAddTap () {
         let vc = AddContactsController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
@@ -88,22 +90,23 @@ extension ContactListController: ViewInputDelegate {
     
 }
 
-//MARK: Add function for delete Rows (swipe left)
+// MARK: Add function for delete Rows (swipe left)
 extension ContactListController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView,
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let trashAction = UIContextualAction(style: .normal, title:  "", handler: {  [unowned self] _, _, completed in
-            let aletController = UIAlertController(title: "Do you want to delete this contact ? ", message: "", preferredStyle: .alert)
+        let trashAction = UIContextualAction(style: .normal, title: "", handler: {  [unowned self] _, _, completed in
+            let aletController = UIAlertController(title: "Do you want to delete this contact ? ",
+                                                   message: "",
+                                                   preferredStyle: .alert)
             
-            let actionYes = UIAlertAction(title: Constants.aletYes, style: .default) { (actionYes) in
+            let actionYes = UIAlertAction(title: Constants.aletYes, style: .default) { _ in
                 self.dataSourse.remove(at: indexPath.row)
                 self.presenter?.remove(indexPath: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
             }
-            
-            let actionNo = UIAlertAction(title: Constants.aletNo, style: .default) { (actionNo) in completed(true)}
+            let actionNo = UIAlertAction(title: Constants.aletNo, style: .default) { _ in completed(true) }
             aletController.addAction(actionYes)
             aletController.addAction(actionNo)
             self.present(aletController, animated: true)
@@ -114,14 +117,14 @@ extension ContactListController: UITableViewDelegate, UITableViewDataSource {
         return UISwipeActionsConfiguration(actions: [trashAction])
     }
     
-    //MARK: - UITableViewDataSource
+    // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataSourse.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifier, for: indexPath)
-        let name =  dataSourse[indexPath.row]
+        let name = dataSourse[indexPath.row]
         cell.textLabel?.text = name
         return cell
     }

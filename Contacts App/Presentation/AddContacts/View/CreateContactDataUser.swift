@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 struct ViewModel {
     var cellType: DetailCellType
@@ -22,8 +23,25 @@ struct ContactCreate {
     var surname: String
     var middleName: String
     var phone: String
-    var date: Int
+    var date: String
     var sex: String
     var email: String
     var notes: String
+}
+
+enum VariantsSex: Int, CaseIterable {
+    case man
+    case woman
+    case none
+    
+    var displayRowValue: String {
+        switch self {
+        case .man:
+            return "Man"
+        case .woman:
+           return "Woman"
+        case .none:
+            return "Nothing"
+        }
+    }
 }
