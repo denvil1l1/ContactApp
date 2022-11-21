@@ -24,70 +24,37 @@ class AddListPresenter {
             middleName: "",
             phone: "",
             email: "",
-            date: "",
-            sex: "",
+            date: nil,
+            sex: VariantsSex.none,
             notes: ""
         )
     }
     
     private var saveHieght: CGFloat = 0
     
-    // MARK: - ValidationCheck
-    static func validatedPhone(phoneExamination: String) -> Bool {
-        let phone = phoneExamination.trimmingCharacters(in: CharacterSet.whitespaces)
-        let regex = "(([+]+[7])|[8])+[0-9]{10}"
-        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
-        let result = predicate.evaluate(with: phone)
-        return result
-    }
-    
-    static func validatedEmail(emailExamination: String) -> Bool {
-        let email = emailExamination.trimmingCharacters(in: CharacterSet.whitespaces)
-        let regex = "[A-Z0-9a-z.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
-        let result = predicate.evaluate(with: email)
-        return result
-    }
-    
-    static func validatedName(nameExamination: String) -> Bool {
-        let name = nameExamination.trimmingCharacters(in: CharacterSet.whitespaces)
-        let regex = "[A-Za-z]{1,}"
-        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
-        let result = predicate.evaluate(with: name)
-        return result
-    }
-    
-    static func validatedSurname(surnameExamination: String) -> Bool {
-        let surname = surnameExamination.trimmingCharacters(in: CharacterSet.whitespaces)
-        let regex = "[A-Za-z]{1,}"
-        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
-        let result = predicate.evaluate(with: surname)
-        return result
-    }
-    
     private func validatePhone() -> Bool {
         var isValid = false
-        isValid = AddListPresenter.validatedPhone(phoneExamination: contact.phone)
+        isValid = String.validatedPhone(phoneExamination: contact.phone)
         return isValid
-     }
-     
-     private func validateEmail() -> Bool {
-         var isValid = false
-         isValid = AddListPresenter.validatedEmail(emailExamination: contact.email)
-         return isValid
-     }
-     
-     private func validateName() -> Bool {
-         var isValid = false
-         isValid = AddListPresenter.validatedName(nameExamination: contact.name)
-         return isValid
-     }
-     
-     private func validateSurname() -> Bool {
-         var isValid = false
-         isValid = AddListPresenter.validatedSurname(surnameExamination: contact.surname)
-         return isValid
-     }
+    }
+    
+    private func validateEmail() -> Bool {
+        var isValid = false
+        isValid = String.validatedEmail(emailExamination: contact.email)
+        return isValid
+    }
+    
+    private func validateName() -> Bool {
+        var isValid = false
+        isValid = String.validatedName(nameExamination: contact.name)
+        return isValid
+    }
+    
+    private func validateSurname() -> Bool {
+        var isValid = false
+        isValid = String.validatedSurname(surnameExamination: contact.surname)
+        return isValid
+    }
     
     func calculateNotesHeight() -> CGFloat {
         let height = contact.notes.heightWithConstrainedWidth(
@@ -116,8 +83,8 @@ class AddListPresenter {
                     text: contact.name,
                     placeHolder: "name",
                     errorColor: createColorForElements(contactRes:
-                                                        AddListPresenter.validatedName(nameExamination:
-                                                                                        contact.name))
+                                                        String.validatedName(nameExamination:
+                                                                                contact.name))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .surname,
@@ -125,8 +92,8 @@ class AddListPresenter {
                     text: contact.surname,
                     placeHolder: "surname",
                     errorColor: createColorForElements(contactRes:
-                                                        AddListPresenter.validatedSurname(surnameExamination:
-                                                                                            contact.surname))
+                                                        String.validatedSurname(surnameExamination:
+                                                                                    contact.surname))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .middleName,
@@ -140,8 +107,8 @@ class AddListPresenter {
                     text: contact.phone,
                     placeHolder: "phone",
                     errorColor: createColorForElements(contactRes:
-                                                        AddListPresenter.validatedPhone(phoneExamination:
-                                                                                            contact.phone))
+                                                        String.validatedPhone(phoneExamination:
+                                                                                contact.phone))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .email,
@@ -149,20 +116,20 @@ class AddListPresenter {
                     text: contact.email,
                     placeHolder: "email",
                     errorColor: createColorForElements(contactRes:
-                                                        AddListPresenter.validatedEmail(emailExamination:
-                                                                                            contact.email))
+                                                        String.validatedEmail(emailExamination:
+                                                                                contact.email))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .date,
-                  viewModel: DatePickerTextInputViewModel(text: contact.date, placeHolder: "date"),
+                  viewModel: DatePickerViewModel(text: "", placeHolder: "date"),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .sex,
-                  viewModel: ViewPickerTextInputViewModel(text: contact.sex, placeholder: "sex"),
+                  viewModel: SexPickerViewModel(text: "", placeholder: "sex", pickerData: VariantsSex.allCases.map({ $0.displayRowValue })),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .notes,
-                  viewModel: NotesTextInputViewModel(text: contact.notes),
+                  viewModel: NotesTextViewModel(text: contact.notes),
                   cellSize: .init(width: width, height: calculateNotesHeight()))
-            ]
+        ]
         view?.setupData(data: dataSource)
     }
     
@@ -178,15 +145,31 @@ class AddListPresenter {
             contact.phone = text
         case .email:
             contact.email = text
-        case .date:
-            contact.date = text
-        case .sex:
-            contact.sex = text
         case .notes:
             contact.notes = text
+        default:
+            break
         }
     }
-
+    
+    func enumSave(sexPicker: VariantsSex, cellType: DetailCellType) {
+        switch cellType {
+        case .sex:
+            contact.sex = sexPicker
+        default:
+            break
+        }
+    }
+    
+    func dateSave (cellType: DetailCellType, date: Date) {
+        switch cellType {
+        case .date:
+            contact.date = date
+        default:
+            break
+        }
+    }
+    
     func dateFormatter(datePicker: Date) -> String {
         let date = datePicker
         let formatter = DateFormatter()
@@ -195,7 +178,7 @@ class AddListPresenter {
     }
     
     func save() {
-
+        
         let isValidPhone = validatePhone()
         let isValidEmail = validateEmail()
         let isValidateName = validateName()
@@ -203,20 +186,14 @@ class AddListPresenter {
         if (!isValidPhone || !isValidEmail || !isValidSurname || !isValidateName) == true {
             createForm()
             view?.showAlert()
+            print(contact.sex)
+            print(contact.date)
         } else {
-            print(ContactCreate.init(name: contact.name,
-                                     surname: contact.surname,
-                                     middleName: contact.middleName,
-                                     phone: contact.phone,
-                                     date: contact.date,
-                                     sex: contact.sex,
-                                     email: contact.email,
-                                     notes: contact.notes))
         }
     }
 }
 
 private typealias TextInputViewModel = TextFieldCollectionViewCell.ViewModel
-private typealias DatePickerTextInputViewModel = DatePickerCollectionViewCell.ViewModel
-private typealias ViewPickerTextInputViewModel = SexPickerCollectionViewCell.ViewModel
-private typealias NotesTextInputViewModel = NotesTextcollectionView.ViewModel
+private typealias DatePickerViewModel = DatePickerCollectionViewCell.ViewModel
+private typealias SexPickerViewModel = PickerCollectionViewCell.ViewModel
+private typealias NotesTextViewModel = NotesTextcollectionView.ViewModel

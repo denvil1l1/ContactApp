@@ -1,18 +1,19 @@
 import UIKit
 
-protocol InputCollectionCellSizeDelegate: AnyObject {
-    func inputInTextView(text: String, cell: UICollectionViewCell)
+protocol NotesTextCollectionViewDelegate: AnyObject {
+    func notesTextCellChanged(text: String, cell: UICollectionViewCell)
 }
 
 class NotesTextcollectionView: UICollectionViewCell {
     
-    weak var delegate: InputCollectionCellSizeDelegate?
+    weak var delegate: NotesTextCollectionViewDelegate?
     
     private enum Constants {
         static let textEmpty = ""
         static let leadingTrailingConstant: CGFloat = 20
         static let topConstant: CGFloat = 20
         static let bottomConstant: CGFloat = 10
+        static let placeholderConstant: CGFloat = 5
     }
     
     static var horizontalSpasing: CGFloat {
@@ -22,19 +23,19 @@ class NotesTextcollectionView: UICollectionViewCell {
         Constants.topConstant + Constants.bottomConstant + 16
     }
     
-    private lazy var plaiceholderForTextView: UILabel = {
-    let textLabelForNotesText = UILabel()
+    private lazy var placeholderLabel: UILabel = {
+        
+        let textLabelForNotesText = UILabel()
         textLabelForNotesText.backgroundColor = UIColor.systemGray6
         textLabelForNotesText.text = "notes"
         textLabelForNotesText.translatesAutoresizingMaskIntoConstraints = false
         textLabelForNotesText.textColor = .systemGray2
-        textLabelForNotesText.sizeToFit()
         return textLabelForNotesText
     }()
     
-    private lazy var textViewNotes: UITextView = {
-    let notesText = UITextView()
-        notesText.addSubview(plaiceholderForTextView)
+    private lazy var textView: UITextView = {
+        let notesText = UITextView()
+        notesText.addSubview(placeholderLabel)
         notesText.translatesAutoresizingMaskIntoConstraints = false
         notesText.backgroundColor = UIColor.systemGray6
         notesText.layer.cornerRadius = 5
@@ -63,60 +64,55 @@ class NotesTextcollectionView: UICollectionViewCell {
     
     @objc
     func textDidChangeNotification (_ notif: Notification) {
-        
         guard self == notif.object as? UITextView else {
-            delegate?.inputInTextView(text: textViewNotes.text, cell: self)
+            delegate?.notesTextCellChanged(text: textView.text, cell: self)
             textDidChange()
             return
         }
-        
-    }
-
-    func textDidChange() {
-        
-        if textViewNotes.text != Constants.textEmpty {
-            plaiceholderForTextView.isHidden = true
-        } else if textViewNotes.text == Constants.textEmpty {
-            plaiceholderForTextView.isHidden = false
-        }
-        textDidChangeHandler?()
     }
     
-    var textDidChangeHandler: (() -> Void)?
+    func textDidChange() {
+        if textView.text != Constants.textEmpty {
+            placeholderLabel.isHidden = true
+        } else if textView.text == Constants.textEmpty {
+            placeholderLabel.isHidden = false
+        }
+    }
     
     func layoutNotesText() {
-        contentView.addSubview(textViewNotes)
-        contentView.addSubview(plaiceholderForTextView)
+        contentView.addSubview(textView)
+        contentView.addSubview(placeholderLabel)
         NSLayoutConstraint.activate([
-            textViewNotes.leadingAnchor.constraint(
+            textView.leadingAnchor.constraint(
                 equalTo: contentView.leadingAnchor,
                 constant: Constants.leadingTrailingConstant
             ),
-            textViewNotes.topAnchor.constraint(
+            textView.topAnchor.constraint(
                 equalTo: contentView.topAnchor,
                 constant: Constants.topConstant
             ),
             contentView.trailingAnchor.constraint(
-                equalTo: textViewNotes.trailingAnchor,
+                equalTo: textView.trailingAnchor,
                 constant: Constants.leadingTrailingConstant),
             contentView.bottomAnchor.constraint(
-                equalTo: textViewNotes.bottomAnchor,
+                equalTo: textView.bottomAnchor,
                 constant: Constants.bottomConstant),
-            plaiceholderForTextView.leadingAnchor.constraint(
-                equalTo: textViewNotes.leadingAnchor,
-                constant: 5),
-            plaiceholderForTextView.topAnchor.constraint(
-                equalTo: textViewNotes.topAnchor,
-                constant: 5)
+            placeholderLabel.leadingAnchor.constraint(
+                equalTo: textView.leadingAnchor,
+                constant: Constants.placeholderConstant),
+            placeholderLabel.topAnchor.constraint(
+                equalTo: textView.topAnchor,
+                constant: Constants.placeholderConstant)
         ])
     }
     
     func configure(with viewModel: ViewModel) {
-        textViewNotes.text = viewModel.text
+        textView.text = viewModel.text
     }
 }
 
 extension NotesTextcollectionView {
+    
     struct ViewModel {
         var text: String
     }

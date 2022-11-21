@@ -2,7 +2,7 @@ import Foundation
 
 final class ContactListPresenter {
     
-    weak var view: ViewInputDelegate?
+    weak var view: ContactListViewInput?
     
     // For UserDefaults
     let defaults = UserDefaults.standard
@@ -11,8 +11,8 @@ final class ContactListPresenter {
         get {
             if let data = defaults.value(forKey: nameContact) as? Data,
                let contacts = try? JSONDecoder().decode([Contact].self, from: data) {
-                    return contacts
-               }
+                return contacts
+            }
             return []
         } set {
             if let data = try? JSONEncoder().encode(newValue) {
@@ -53,5 +53,5 @@ final class ContactListPresenter {
             .map { $0.name + " " + $0.surname }
         view?.setupData(with: testData)
     }
-
+    
 }

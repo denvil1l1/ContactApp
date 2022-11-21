@@ -16,30 +16,40 @@ class AddContactsController: UIViewController {
     // MARK: - AddPresenter
     var presenter: AddListPresenter?
     
+    class func instantiate() -> UIViewController {
+        let vc = AddContactsController()
+        let presenter = AddListPresenter()
+        vc.presenter = presenter
+        presenter.view = vc
+        return vc
+    }
+    
     // MARK: - AllVarAndLET
     var dataSourse: [ViewModel] = []
     
     // MARK: - UICollectionView
     private lazy var collectionView: UICollectionView = {
         let collectionView: UICollectionView
-        collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: self.layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.backgroundColor = UIColor.white
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(TextFieldCollectionViewCell.self, forCellWithReuseIdentifier: Constants.textField)
         collectionView.register(DatePickerCollectionViewCell.self, forCellWithReuseIdentifier: Constants.datePicker)
-        collectionView.register(SexPickerCollectionViewCell.self, forCellWithReuseIdentifier: Constants.pickerView)
+        collectionView.register(PickerCollectionViewCell.self, forCellWithReuseIdentifier: Constants.pickerView)
         collectionView.register(NotesTextcollectionView.self, forCellWithReuseIdentifier: Constants.textViewNotes)
-        view.addSubview(collectionView)
         return collectionView
     }()
     
-    // MARK: CollectionViewlayout
-    private var layout: UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
-        let boundSize: CGSize = UIScreen.main.bounds.size
-        layout.itemSize = CGSize(width: boundSize.width, height: 45)
-        return layout
+    func layoutCollectionView () {
+        view.addSubview(collectionView)
+        NSLayoutConstraint.activate([
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            view.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
+            view.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor)
+        ])
     }
     
     // MARK: - CnfigureNavigationBar
@@ -48,15 +58,8 @@ class AddContactsController: UIViewController {
             barButtonSystemItem: .save, target: self, action: #selector(onAddTap))
         navigationItem.title = Constants.navigationTitle
     }
- 
-    // MARK: - CollectionViewCreate
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setTapGestureRecognizer()
-        configureNavigationBar()
-        presenter = AddListPresenter()
-        presenter?.view = self
-        presenter?.createForm()
+    
+    func notificationCenter() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self,
                                        selector: #selector(adjustForKeyboard),
@@ -67,7 +70,17 @@ class AddContactsController: UIViewController {
                                        name: UIResponder.keyboardWillChangeFrameNotification,
                                        object: nil)
     }
-   
+    
+    // MARK: - CollectionViewCreate
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setTapGestureRecognizer()
+        configureNavigationBar()
+        presenter?.createForm()
+        notificationCenter()
+        layoutCollectionView()
+    }
+    
     // MARK: - setTapGestureRecognized
     func setTapGestureRecognizer() {
         
@@ -80,20 +93,20 @@ class AddContactsController: UIViewController {
         
         guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
                 as? NSValue else { return }
-
+        
         let keyboardScreenEndFrame = keyboardValue.cgRectValue
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
-
+        
         if notification.name == UIResponder.keyboardWillHideNotification {
             collectionView.contentInset = .zero
         } else {
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height
-                                                   - view.safeAreaInsets.bottom, right: 0)
+            collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height
+                                                       - view.safeAreaInsets.bottom, right: 0)
         }
-
+        
         collectionView.scrollIndicatorInsets = collectionView.contentInset
     }
-
+    
     @objc
     func collectionViewTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         view.endEditing(true)
@@ -110,7 +123,7 @@ extension AddContactsController: AddListInputDelegate {
     
     func setupData(with cellDataArray: ([ViewModel])) {
         self.dataSourse = cellDataArray
-            collectionView.reloadData()
+        collectionView.reloadData()
     }
 }
 
@@ -147,8 +160,8 @@ extension AddContactsController: UICollectionViewDataSource {
             return cell
         case .sex:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.pickerView, for: indexPath)
-            if let viewModel = cellItem.viewModel as? SexPickerCollectionViewCell.ViewModel,
-               let cell = cell as? SexPickerCollectionViewCell {
+            if let viewModel = cellItem.viewModel as? PickerCollectionViewCell.ViewModel,
+               let cell = cell as? PickerCollectionViewCell {
                 cell.delegate = self
                 cell.configure(with: viewModel)
             }
@@ -167,7 +180,7 @@ extension AddContactsController: UICollectionViewDataSource {
 
 // MARK: OnDelegateAddListDelegate
 extension AddContactsController: AddListController {
-
+    
     var collectionWidth: CGFloat {
         
         return view.bounds.width
@@ -181,12 +194,13 @@ extension AddContactsController: AddListController {
 }
 
 // MARK: - Extansion
-extension AddContactsController: SexPickerCollectionDelegate {
-    func saveSex(sexNumber: String) {
-        presenter?.textSave(cellType: .sex, text: sexNumber)
+extension AddContactsController: PickerCellDelegate {
+    func sexPickerCellSave(sexPicker: VariantsSex) {
+        presenter?.enumSave(sexPicker: sexPicker, cellType: .sex)
     }
 }
-extension AddContactsController: InputCollectionCellDelegate {
+
+extension AddContactsController: TextViewCellDelegate {
     
     func onTextEdit(text: String, cell: UICollectionViewCell) {
         
@@ -208,21 +222,22 @@ extension AddContactsController: InputCollectionCellDelegate {
         alertController.addAction(actionOk)
         self.present(alertController, animated: true)
     }
-
+    
 }
 
-extension AddContactsController: ChangeDatePickerValueDelegate {
-    func convertDate(dateOnPicker: Date) -> String {
-        return (presenter?.dateFormatter(datePicker: dateOnPicker))!
+extension AddContactsController: DatePickerCollectionViewCellDelegate {
+    func datePickerCellDateChanged(date: Date) {
+        presenter?.dateSave(cellType: .date, date: date)
     }
     
-    func datePickerChanged(text: String) {
-        presenter?.textSave(cellType: .date, text: text)
+    func datePickerCellConvertDate(dateOnPicker: Date) -> String {
+        return (presenter?.dateFormatter(datePicker: dateOnPicker) ?? "")
     }
+    
 }
 
-extension AddContactsController: InputCollectionCellSizeDelegate {
-    func inputInTextView(text: String, cell: UICollectionViewCell) {
+extension AddContactsController: NotesTextCollectionViewDelegate {
+    func notesTextCellChanged(text: String, cell: UICollectionViewCell) {
         presenter?.textSave(cellType: .notes, text: text)
         
         if let indexPath = collectionView.indexPath(for: cell) {

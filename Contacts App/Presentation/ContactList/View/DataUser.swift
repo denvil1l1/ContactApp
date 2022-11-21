@@ -7,7 +7,7 @@ struct Contact: Codable {
     var middleName: String
     var phone: String
     var email: String
-    var date: String
-    var sex: String
+    var date: Date?
+    var sex: VariantsSex?
     var notes: String
 }

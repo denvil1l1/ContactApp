@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-protocol InputCollectionCellDelegate: AnyObject {
+protocol TextViewCellDelegate: AnyObject {
     func onTextEdit(text: String, cell: UICollectionViewCell)
 }
 
@@ -11,12 +11,11 @@ class TextFieldCollectionViewCell: UICollectionViewCell {
         static let topLeadingTrailing = CGFloat(20)
     }
     
-    weak var delegate: InputCollectionCellDelegate?
+    weak var delegate: TextViewCellDelegate?
     
     private lazy var allTextField: UITextField = {
         var textField = UITextField()
         textField.borderStyle = UITextField.BorderStyle.roundedRect
-        textField.text = nil
         textField.backgroundColor = UIColor.systemGray6
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
@@ -26,8 +25,8 @@ class TextFieldCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-       layoutTextField()
-   }
+        layoutTextField()
+    }
     
     @objc
     func textDidBegin () {
@@ -35,18 +34,10 @@ class TextFieldCollectionViewCell: UICollectionViewCell {
     }
     
     @objc
-    func textDidChangeNotification (_ notif: Notification) {
-        guard self == notif.object as? UITextView else {
-            textDidChange()
-            return
-        }
-    }
-    
-    @objc
     func textDidChange() {
         delegate?.onTextEdit(text: allTextField.text ?? "", cell: self)
     }
- 
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -65,7 +56,7 @@ class TextFieldCollectionViewCell: UICollectionViewCell {
         allTextField.placeholder = viewModel.placeHolder
         allTextField.text = viewModel.text
         if let errorColor = viewModel.errorColor {
-             allTextField.textColor = errorColor
+            allTextField.textColor = errorColor
         } else {
             allTextField.textColor = UIColor.black
         }

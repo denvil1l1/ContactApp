@@ -21,7 +21,7 @@
 		869475802909290800E81586 /* TextFieldCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694757F2909290800E81586 /* TextFieldCollectionViewCell.swift */; };
 		86947582290960BA00E81586 /* CreateContactDataUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86947581290960BA00E81586 /* CreateContactDataUser.swift */; };
 		86960E932910F21B00E574CC /* DatePickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86960E922910F21B00E574CC /* DatePickerCollectionViewCell.swift */; };
-		86960E9529113FD100E574CC /* SexPickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86960E9429113FD100E574CC /* SexPickerCollectionViewCell.swift */; };
+		86960E9529113FD100E574CC /* PickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86960E9429113FD100E574CC /* PickerCollectionViewCell.swift */; };
 		86A4490428F97AD400DCFEB3 /* ContactListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A4490328F97AD400DCFEB3 /* ContactListPresenter.swift */; };
 		86A4490628F97DB200DCFEB3 /* ContactListInputDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A4490528F97DB200DCFEB3 /* ContactListInputDelegate.swift */; };
 		86CBFC0A28F75D2F0021E6AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CBFC0928F75D2F0021E6AB /* AppDelegate.swift */; };
@@ -69,7 +69,7 @@
 		8694757F2909290800E81586 /* TextFieldCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCollectionViewCell.swift; sourceTree = "<group>"; };
 		86947581290960BA00E81586 /* CreateContactDataUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateContactDataUser.swift; sourceTree = "<group>"; };
 		86960E922910F21B00E574CC /* DatePickerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCollectionViewCell.swift; sourceTree = "<group>"; };
-		86960E9429113FD100E574CC /* SexPickerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SexPickerCollectionViewCell.swift; sourceTree = "<group>"; };
+		86960E9429113FD100E574CC /* PickerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerCollectionViewCell.swift; sourceTree = "<group>"; };
 		86A4490328F97AD400DCFEB3 /* ContactListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListPresenter.swift; sourceTree = "<group>"; };
 		86A4490528F97DB200DCFEB3 /* ContactListInputDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListInputDelegate.swift; sourceTree = "<group>"; };
 		86CBFC0628F75D2F0021E6AB /* Contacts App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -131,7 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				8694757F2909290800E81586 /* TextFieldCollectionViewCell.swift */,
-				86960E9429113FD100E574CC /* SexPickerCollectionViewCell.swift */,
+				86960E9429113FD100E574CC /* PickerCollectionViewCell.swift */,
 				86960E922910F21B00E574CC /* DatePickerCollectionViewCell.swift */,
 				867DE761291298D0008885E3 /* NotesTextCollectionViewCell.swift */,
 			);
@@ -511,7 +511,7 @@
 				869475802909290800E81586 /* TextFieldCollectionViewCell.swift in Sources */,
 				8650505428F7FA7F0081FC47 /* ContactListController.swift in Sources */,
 				8650505828F857830081FC47 /* DataUser.swift in Sources */,
-				86960E9529113FD100E574CC /* SexPickerCollectionViewCell.swift in Sources */,
+				86960E9529113FD100E574CC /* PickerCollectionViewCell.swift in Sources */,
 				8694757E29090AB300E81586 /* AddListDelegate.swift in Sources */,
 				86CBFC0A28F75D2F0021E6AB /* AppDelegate.swift in Sources */,
 				86CBFC0C28F75D2F0021E6AB /* SceneDelegate.swift in Sources */,

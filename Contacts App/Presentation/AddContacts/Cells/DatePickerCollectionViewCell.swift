@@ -1,34 +1,34 @@
 import UIKit
- 
-protocol ChangeDatePickerValueDelegate: AnyObject {
-    func convertDate(dateOnPicker: Date) -> String
-    func datePickerChanged(text: String)
+
+protocol DatePickerCollectionViewCellDelegate: AnyObject {
+    func datePickerCellConvertDate(dateOnPicker: Date) -> String
+    func datePickerCellDateChanged(date: Date)
 }
 
 class DatePickerCollectionViewCell: UICollectionViewCell {
     
-    weak var delegate: ChangeDatePickerValueDelegate?
+    weak var delegate: DatePickerCollectionViewCellDelegate?
     
     private lazy var dateTextField: UITextField = {
-        var textField = UITextField()
+        let textField = UITextField()
         textField.borderStyle = UITextField.BorderStyle.roundedRect
         textField.backgroundColor = UIColor.systemGray6
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.inputView = datePicker
         textField.text = "date"
         return textField
-       
-    }()
         
-        private lazy var datePicker: UIDatePicker = {
-        var datePicker = UIDatePicker()
-            datePicker.preferredDatePickerStyle = .wheels
-            datePicker.datePickerMode = .date
-            datePicker.translatesAutoresizingMaskIntoConstraints = false
-            datePicker.addTarget(self, action: #selector(handleDatePicker), for: .valueChanged)
-            datePicker.maximumDate = Date()
-            datePicker.minimumDate = Date() - 3600 * 24 * 365 * 200
-            return datePicker
+    }()
+    
+    private lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.datePickerMode = .date
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.addTarget(self, action: #selector(handleDatePicker), for: .valueChanged)
+        datePicker.maximumDate = Date()
+        datePicker.minimumDate = Date() - 3600 * 24 * 365 * 200
+        return datePicker
     }()
     
     // MARK: - viewDidLoad
@@ -40,11 +40,11 @@ class DatePickerCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-   
+    
     @objc
     func handleDatePicker(sender: UIDatePicker) {
-        dateTextField.text = (delegate?.convertDate(dateOnPicker: datePicker.date))
-        delegate?.datePickerChanged(text: dateTextField.text ?? "")
+        dateTextField.text = delegate?.datePickerCellConvertDate(dateOnPicker: datePicker.date)
+        delegate?.datePickerCellDateChanged(date: datePicker.date)
     }
     
     func layoutDataPicker() {

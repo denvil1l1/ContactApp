@@ -1,12 +1,13 @@
 import UIKit
 
-protocol SexPickerCollectionDelegate: AnyObject {
-    func saveSex(sexNumber: String)
+protocol PickerCellDelegate: AnyObject {
+    func sexPickerCellSave(sexPicker: VariantsSex)
 }
 
-class SexPickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource {
+class PickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource {
     
-    weak var delegate: SexPickerCollectionDelegate?
+    weak var delegate: PickerCellDelegate?
+    var dataSource: [String] = []
     
     private lazy var pickerSex: UIPickerView = {
         let pickerSex = UIPickerView()
@@ -22,7 +23,7 @@ class SexPickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource 
         textFieldForPickerView.translatesAutoresizingMaskIntoConstraints = false
         textFieldForPickerView.inputView = pickerSex
         return textFieldForPickerView
-       
+        
     }()
     
     override init (frame: CGRect) {
@@ -47,33 +48,36 @@ class SexPickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource 
     func configure(with viewModel: ViewModel) {
         textFieldForPickerView.placeholder = viewModel.placeholder
         textFieldForPickerView.text = viewModel.text
+        dataSource = viewModel.pickerData
     }
 }
 
-extension SexPickerCollectionViewCell {
+extension PickerCollectionViewCell {
     
     struct ViewModel {
         let text: String
         let placeholder: String
+        let pickerData: [String]
     }
 }
 
-extension SexPickerCollectionViewCell {
+extension PickerCollectionViewCell {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return 3
+        return dataSource.count
     }
 }
 
-extension SexPickerCollectionViewCell: UIPickerViewDelegate {
+extension PickerCollectionViewCell: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         let result = VariantsSex.allCases[row].displayRowValue
-        delegate?.saveSex(sexNumber: result)
+        delegate?.sexPickerCellSave(sexPicker: VariantsSex(rawValue: row) ?? VariantsSex.none)
+        print(VariantsSex.allCases[row].rawValue)
         textFieldForPickerView.text = result
         return "\(result)"
     }

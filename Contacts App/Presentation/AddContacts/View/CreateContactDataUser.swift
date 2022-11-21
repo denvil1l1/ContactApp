@@ -11,9 +11,9 @@ enum DetailCellType {
     case name
     case surname
     case middleName
-    case date
     case sex
     case phone
+    case date
     case email
     case notes
 }
@@ -23,13 +23,13 @@ struct ContactCreate {
     var surname: String
     var middleName: String
     var phone: String
-    var date: String
-    var sex: String
+    var date: Date
+    var sex: VariantsSex
     var email: String
     var notes: String
 }
 
-enum VariantsSex: Int, CaseIterable {
+enum VariantsSex: Int, CaseIterable, Codable {
     case man
     case woman
     case none
@@ -39,7 +39,7 @@ enum VariantsSex: Int, CaseIterable {
         case .man:
             return "Man"
         case .woman:
-           return "Woman"
+            return "Woman"
         case .none:
             return "Nothing"
         }

@@ -76,12 +76,12 @@ class ContactListController: UIViewController {
     // MARK: - ButtonForNewController
     @objc
     func onAddTap () {
-        let vc = AddContactsController()
+        let vc = AddContactsController.instantiate()
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
-extension ContactListController: ViewInputDelegate {
+extension ContactListController: ContactListViewInput {
     
     func setupData(with arrayContactsController: ([String])) {
         self.dataSourse = arrayContactsController
@@ -101,7 +101,7 @@ extension ContactListController: UITableViewDelegate, UITableViewDataSource {
                                                    message: "",
                                                    preferredStyle: .alert)
             
-            let actionYes = UIAlertAction(title: Constants.aletYes, style: .default) { _ in
+            let actionYes = UIAlertAction(title: Constants.aletYes, style: .default) { [unowned self]_ in
                 self.dataSourse.remove(at: indexPath.row)
                 self.presenter?.remove(indexPath: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
