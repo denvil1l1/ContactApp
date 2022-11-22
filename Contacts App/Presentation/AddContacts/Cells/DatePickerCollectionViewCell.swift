@@ -1,8 +1,8 @@
 import UIKit
 
 protocol DatePickerCollectionViewCellDelegate: AnyObject {
-    func datePickerCellConvertDate(dateOnPicker: Date) -> String
-    func datePickerCellDateChanged(date: Date)
+    func datePickerCellConvertDate(dateOnPicker: Date) -> String?
+    func datePickerCellDateChanged(date: Date, row: UICollectionViewCell)
 }
 
 class DatePickerCollectionViewCell: UICollectionViewCell {
@@ -15,7 +15,6 @@ class DatePickerCollectionViewCell: UICollectionViewCell {
         textField.backgroundColor = UIColor.systemGray6
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.inputView = datePicker
-        textField.text = "date"
         return textField
         
     }()
@@ -43,8 +42,8 @@ class DatePickerCollectionViewCell: UICollectionViewCell {
     
     @objc
     func handleDatePicker(sender: UIDatePicker) {
+        delegate?.datePickerCellDateChanged(date: datePicker.date, row: self)
         dateTextField.text = delegate?.datePickerCellConvertDate(dateOnPicker: datePicker.date)
-        delegate?.datePickerCellDateChanged(date: datePicker.date)
     }
     
     func layoutDataPicker() {
@@ -66,7 +65,8 @@ class DatePickerCollectionViewCell: UICollectionViewCell {
 extension DatePickerCollectionViewCell {
     
     struct ViewModel {
-        var text: String
+        var text: String?
         let placeHolder: String
     }
+    
 }

@@ -18,17 +18,6 @@ enum DetailCellType {
     case notes
 }
 
-struct ContactCreate {
-    var name: String
-    var surname: String
-    var middleName: String
-    var phone: String
-    var date: Date
-    var sex: VariantsSex
-    var email: String
-    var notes: String
-}
-
 enum VariantsSex: Int, CaseIterable, Codable {
     case man
     case woman

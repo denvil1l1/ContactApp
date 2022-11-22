@@ -55,7 +55,10 @@ class AddContactsController: UIViewController {
     // MARK: - CnfigureNavigationBar
     private func configureNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .save, target: self, action: #selector(onAddTap))
+            barButtonSystemItem: .save,
+            target: self,
+            action: #selector(onAddTap)
+        )
         navigationItem.title = Constants.navigationTitle
     }
     
@@ -83,14 +86,12 @@ class AddContactsController: UIViewController {
     
     // MARK: - setTapGestureRecognized
     func setTapGestureRecognizer() {
-        
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(collectionViewTapped)))
     }
     
     // MARK: - Targets
     @objc
     func adjustForKeyboard(notification: Notification) {
-        
         guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
                 as? NSValue else { return }
         
@@ -114,7 +115,7 @@ class AddContactsController: UIViewController {
     
     @objc
     func onAddTap() {
-        self.presenter?.save()
+        presenter?.save()
     }
 }
 
@@ -125,6 +126,7 @@ extension AddContactsController: AddListInputDelegate {
         self.dataSourse = cellDataArray
         collectionView.reloadData()
     }
+
 }
 
 // MARK: - CollectionViewDataSource
@@ -132,7 +134,6 @@ extension AddContactsController: UICollectionViewDataSource {
     
     // MARK: - collectionView
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         dataSourse.count
     }
     
@@ -176,31 +177,50 @@ extension AddContactsController: UICollectionViewDataSource {
             return cell
         }
     }
+    
 }
 
 // MARK: OnDelegateAddListDelegate
-extension AddContactsController: AddListController {
+extension AddContactsController: AddListViewInput {
     
     var collectionWidth: CGFloat {
-        
-        return view.bounds.width
+        view.bounds.width
     }
-    
-    func  setupData(data: [ViewModel]) {
-        
+
+    func setupData(data: [ViewModel]) {
         dataSourse = data
         collectionView.reloadData()
     }
+
 }
 
 // MARK: - Extansion
 extension AddContactsController: PickerCellDelegate {
-    func sexPickerCellSave(sexPicker: VariantsSex) {
-        presenter?.enumSave(sexPicker: sexPicker, cellType: .sex)
+
+    func pickerText(at: Int) -> String? {
+        presenter?.enumTextCreate(at: at)
     }
+
+    func pickerRowSelected(at: Int, cell: UICollectionViewCell) {
+        if let indexPath = collectionView.indexPath(for: cell) {
+            if var viewModel = dataSourse[indexPath.item].viewModel as? PickerCollectionViewCell.ViewModel {
+                let cellType = dataSourse[indexPath.item].cellType
+                switch cellType {
+                case .sex:
+                    let sex = VariantsSex(rawValue: at)
+                    viewModel.text = sex?.displayRowValue ?? ""
+                    presenter?.pickerSave(text: sex ?? .none, cellType: cellType)
+                default:
+                    break
+                }
+                dataSourse[indexPath.item].viewModel = viewModel
+            }
+        }
+    }
+
 }
 
-extension AddContactsController: TextViewCellDelegate {
+extension AddContactsController: TextFieldCellDelegate {
     
     func onTextEdit(text: String, cell: UICollectionViewCell) {
         
@@ -211,6 +231,7 @@ extension AddContactsController: TextViewCellDelegate {
             }
             presenter?.textSave(cellType: dataSourse[indexPath.item].cellType, text: text)
         }
+        
     }
     
     func showAlert() {
@@ -226,20 +247,27 @@ extension AddContactsController: TextViewCellDelegate {
 }
 
 extension AddContactsController: DatePickerCollectionViewCellDelegate {
-    func datePickerCellDateChanged(date: Date) {
-        presenter?.dateSave(cellType: .date, date: date)
+    
+    func datePickerCellDateChanged(date: Date, row: UICollectionViewCell) {
+        if let indexPath = collectionView.indexPath(for: row) {
+            if var viewModel = dataSourse[indexPath.item].viewModel as? DatePickerCollectionViewCell.ViewModel {
+                viewModel.text = datePickerCellConvertDate(dateOnPicker: date)
+                dataSourse[indexPath.item].viewModel = viewModel
+            }
+            presenter?.dateSave(cellType: .date, date: date)
+        }
     }
     
-    func datePickerCellConvertDate(dateOnPicker: Date) -> String {
-        return (presenter?.dateFormatter(datePicker: dateOnPicker) ?? "")
+    func datePickerCellConvertDate(dateOnPicker: Date) -> String? {
+        return presenter?.dateString(for: dateOnPicker)
     }
-    
+
 }
 
 extension AddContactsController: NotesTextCollectionViewDelegate {
+    
     func notesTextCellChanged(text: String, cell: UICollectionViewCell) {
         presenter?.textSave(cellType: .notes, text: text)
-        
         if let indexPath = collectionView.indexPath(for: cell) {
             let oldHeight = dataSourse[indexPath.item].cellSize.height
             let newHeight = presenter?.calculateNotesHeight() ?? .zero
@@ -253,6 +281,7 @@ extension AddContactsController: NotesTextCollectionViewDelegate {
             }
         }
     }
+    
 }
 
 extension AddContactsController: UICollectionViewDelegateFlowLayout {
@@ -262,4 +291,5 @@ extension AddContactsController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return dataSourse[indexPath.item].cellSize
     }
+    
 }

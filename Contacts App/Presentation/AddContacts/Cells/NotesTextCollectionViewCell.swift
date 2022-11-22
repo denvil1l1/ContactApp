@@ -25,12 +25,11 @@ class NotesTextcollectionView: UICollectionViewCell {
     
     private lazy var placeholderLabel: UILabel = {
         
-        let textLabelForNotesText = UILabel()
-        textLabelForNotesText.backgroundColor = UIColor.systemGray6
-        textLabelForNotesText.text = "notes"
-        textLabelForNotesText.translatesAutoresizingMaskIntoConstraints = false
-        textLabelForNotesText.textColor = .systemGray2
-        return textLabelForNotesText
+        let label = UILabel()
+        label.backgroundColor = UIColor.systemGray6
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .systemGray2
+        return label
     }()
     
     private lazy var textView: UITextView = {
@@ -72,11 +71,7 @@ class NotesTextcollectionView: UICollectionViewCell {
     }
     
     func textDidChange() {
-        if textView.text != Constants.textEmpty {
-            placeholderLabel.isHidden = true
-        } else if textView.text == Constants.textEmpty {
-            placeholderLabel.isHidden = false
-        }
+        placeholderLabel.isHidden = !textView.text.isEmpty
     }
     
     func layoutNotesText() {
@@ -108,6 +103,7 @@ class NotesTextcollectionView: UICollectionViewCell {
     
     func configure(with viewModel: ViewModel) {
         textView.text = viewModel.text
+        placeholderLabel.text = viewModel.placeholder
     }
 }
 
@@ -115,7 +111,9 @@ extension NotesTextcollectionView {
     
     struct ViewModel {
         var text: String
+        var placeholder: String
     }
+    
 }
 
 extension NotesTextcollectionView: UITextViewDelegate {

@@ -1,7 +1,8 @@
 import UIKit
 
 protocol PickerCellDelegate: AnyObject {
-    func sexPickerCellSave(sexPicker: VariantsSex)
+    func pickerRowSelected(at: Int, cell: UICollectionViewCell)
+    func pickerText(at: Int) -> String?
 }
 
 class PickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource {
@@ -49,16 +50,18 @@ class PickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource {
         textFieldForPickerView.placeholder = viewModel.placeholder
         textFieldForPickerView.text = viewModel.text
         dataSource = viewModel.pickerData
+        pickerSex.reloadAllComponents()
     }
 }
 
 extension PickerCollectionViewCell {
     
     struct ViewModel {
-        let text: String
+        var text: String?
         let placeholder: String
         let pickerData: [String]
     }
+    
 }
 
 extension PickerCollectionViewCell {
@@ -70,15 +73,18 @@ extension PickerCollectionViewCell {
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return dataSource.count
     }
+    
 }
 
 extension PickerCollectionViewCell: UIPickerViewDelegate {
     
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        textFieldForPickerView.text = delegate?.pickerText(at: row)
+        delegate?.pickerRowSelected(at: row, cell: self)
+      }
+
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        let result = VariantsSex.allCases[row].displayRowValue
-        delegate?.sexPickerCellSave(sexPicker: VariantsSex(rawValue: row) ?? VariantsSex.none)
-        print(VariantsSex.allCases[row].rawValue)
-        textFieldForPickerView.text = result
-        return "\(result)"
+        return dataSource[row]
     }
+
 }

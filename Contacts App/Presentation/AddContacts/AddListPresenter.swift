@@ -1,8 +1,8 @@
 import UIKit
 
-protocol AddListController: AnyObject {
+protocol AddListViewInput: AnyObject {
     
-    var collectionWidth: CGFloat {get}
+    var collectionWidth: CGFloat { get }
     
     func showAlert()
     func setupData(data: [ViewModel])
@@ -14,7 +14,7 @@ enum Constants {
 
 class AddListPresenter {
     
-    weak var view: AddListController?
+    weak var view: AddListViewInput?
     private var contact: Contact
     
     init(contact: Contact? = nil) {
@@ -25,36 +25,36 @@ class AddListPresenter {
             phone: "",
             email: "",
             date: nil,
-            sex: VariantsSex.none,
+            sex: .none,
             notes: ""
         )
     }
     
     private var saveHieght: CGFloat = 0
-    
+
     private func validatePhone() -> Bool {
         var isValid = false
         isValid = String.validatedPhone(phoneExamination: contact.phone)
         return isValid
-    }
-    
-    private func validateEmail() -> Bool {
-        var isValid = false
-        isValid = String.validatedEmail(emailExamination: contact.email)
-        return isValid
-    }
-    
-    private func validateName() -> Bool {
-        var isValid = false
-        isValid = String.validatedName(nameExamination: contact.name)
-        return isValid
-    }
-    
-    private func validateSurname() -> Bool {
-        var isValid = false
-        isValid = String.validatedSurname(surnameExamination: contact.surname)
-        return isValid
-    }
+     }
+     
+     private func validateEmail() -> Bool {
+         var isValid = false
+         isValid = String.validatedEmail(emailExamination: contact.email)
+         return isValid
+     }
+     
+     private func validateName() -> Bool {
+         var isValid = false
+         isValid = String.validatedName(nameExamination: contact.name)
+         return isValid
+     }
+     
+     private func validateSurname() -> Bool {
+         var isValid = false
+         isValid = String.validatedSurname(surnameExamination: contact.surname)
+         return isValid
+     }
     
     func calculateNotesHeight() -> CGFloat {
         let height = contact.notes.heightWithConstrainedWidth(
@@ -74,6 +74,10 @@ class AddListPresenter {
         return color
     }
     
+    func enumTextCreate (at: Int) -> String? {
+        VariantsSex(rawValue: at)?.displayRowValue
+    }
+    
     // MARK: - CreateForm
     func createForm() {
         let width = view?.collectionWidth ?? .zero
@@ -84,7 +88,7 @@ class AddListPresenter {
                     placeHolder: "name",
                     errorColor: createColorForElements(contactRes:
                                                         String.validatedName(nameExamination:
-                                                                                contact.name))
+                                                                                        contact.name))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .surname,
@@ -93,7 +97,7 @@ class AddListPresenter {
                     placeHolder: "surname",
                     errorColor: createColorForElements(contactRes:
                                                         String.validatedSurname(surnameExamination:
-                                                                                    contact.surname))
+                                                                                            contact.surname))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .middleName,
@@ -108,7 +112,7 @@ class AddListPresenter {
                     placeHolder: "phone",
                     errorColor: createColorForElements(contactRes:
                                                         String.validatedPhone(phoneExamination:
-                                                                                contact.phone))
+                                                                                            contact.phone))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .email,
@@ -117,20 +121,38 @@ class AddListPresenter {
                     placeHolder: "email",
                     errorColor: createColorForElements(contactRes:
                                                         String.validatedEmail(emailExamination:
-                                                                                contact.email))
+                                                                                            contact.email))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .date,
-                  viewModel: DatePickerViewModel(text: "", placeHolder: "date"),
+                  viewModel: DatePickerViewModel(text: dateString(for: contact.date), placeHolder: "date"),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .sex,
-                  viewModel: SexPickerViewModel(text: "", placeholder: "sex", pickerData: VariantsSex.allCases.map({ $0.displayRowValue })),
+                  viewModel: SexPickerViewModel(text: contact.sex?.displayRowValue, placeholder: "sex", pickerData: VariantsSex.allCases.map({ $0.displayRowValue })),
                   cellSize: .init(width: width, height: Constants.height)),
-            .init(cellType: .notes,
-                  viewModel: NotesTextViewModel(text: contact.notes),
+            .init(cellType: .notes, viewModel: TextViewModel(text: contact.notes, placeholder: "notes"),
                   cellSize: .init(width: width, height: calculateNotesHeight()))
-        ]
+           
+            ]
         view?.setupData(data: dataSource)
+    }
+    
+    func pickerSave(text: VariantsSex, cellType: DetailCellType) {
+        switch cellType {
+        case .sex:
+            contact.sex = text
+        default:
+            break
+        }
+    }
+    
+    func dateSave (cellType: DetailCellType, date: Date) {
+        switch cellType {
+        case .date:
+            contact.date = date
+        default:
+            break
+        }
     }
     
     func textSave(cellType: DetailCellType, text: String) {
@@ -152,42 +174,29 @@ class AddListPresenter {
         }
     }
     
-    func enumSave(sexPicker: VariantsSex, cellType: DetailCellType) {
-        switch cellType {
-        case .sex:
-            contact.sex = sexPicker
-        default:
-            break
-        }
-    }
-    
-    func dateSave (cellType: DetailCellType, date: Date) {
-        switch cellType {
-        case .date:
-            contact.date = date
-        default:
-            break
-        }
-    }
-    
-    func dateFormatter(datePicker: Date) -> String {
-        let date = datePicker
+    private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        return formatter.string(from: date)
+        formatter.dateFormat = "dd.MM.yyyy"
+        return formatter
+    }()
+
+    func dateString(for date: Date?) -> String? {
+        if let date = date {
+            return dateFormatter.string(from: date)
+        }
+        return nil
     }
-    
+
     func save() {
-        
+
         let isValidPhone = validatePhone()
         let isValidEmail = validateEmail()
         let isValidateName = validateName()
         let isValidSurname = validateSurname()
-        if (!isValidPhone || !isValidEmail || !isValidSurname || !isValidateName) == true {
+        if !isValidPhone || !isValidEmail || !isValidSurname || !isValidateName {
             createForm()
             view?.showAlert()
             print(contact.sex)
-            print(contact.date)
         } else {
         }
     }
@@ -196,4 +205,4 @@ class AddListPresenter {
 private typealias TextInputViewModel = TextFieldCollectionViewCell.ViewModel
 private typealias DatePickerViewModel = DatePickerCollectionViewCell.ViewModel
 private typealias SexPickerViewModel = PickerCollectionViewCell.ViewModel
-private typealias NotesTextViewModel = NotesTextcollectionView.ViewModel
+private typealias TextViewModel = NotesTextcollectionView.ViewModel

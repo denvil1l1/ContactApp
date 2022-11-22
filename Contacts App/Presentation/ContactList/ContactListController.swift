@@ -144,4 +144,5 @@ extension ContactListController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         presenter?.search(searchText: "")
     }
+    
 }

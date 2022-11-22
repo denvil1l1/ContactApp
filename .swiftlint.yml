@@ -65,12 +65,12 @@ disabled_rules:
 
 line_length:
   ignores_comments: true
-  warning: 120
+  warning: 1000
 number_separator:
   minimum_length: 5
 type_body_length:
   - 400 # warning
-  - 800 # error
+  - 10000 # error
 file_length:
   - 600 # warning
   - 1000 # error

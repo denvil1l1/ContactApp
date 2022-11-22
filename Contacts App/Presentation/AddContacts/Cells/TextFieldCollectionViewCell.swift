@@ -1,19 +1,20 @@
 import Foundation
 import UIKit
 
-protocol TextViewCellDelegate: AnyObject {
+protocol TextFieldCellDelegate: AnyObject {
+    
     func onTextEdit(text: String, cell: UICollectionViewCell)
 }
 
 class TextFieldCollectionViewCell: UICollectionViewCell {
     
     private enum Constants {
-        static let topLeadingTrailing = CGFloat(20)
+        static let topLeadingTrailing: CGFloat = 20
     }
     
-    weak var delegate: TextViewCellDelegate?
+    weak var delegate: TextFieldCellDelegate?
     
-    private lazy var allTextField: UITextField = {
+    private lazy var textField: UITextField = {
         var textField = UITextField()
         textField.borderStyle = UITextField.BorderStyle.roundedRect
         textField.backgroundColor = UIColor.systemGray6
@@ -30,12 +31,12 @@ class TextFieldCollectionViewCell: UICollectionViewCell {
     
     @objc
     func textDidBegin () {
-        allTextField.textColor = UIColor.black
+        textField.textColor = UIColor.black
     }
     
     @objc
     func textDidChange() {
-        delegate?.onTextEdit(text: allTextField.text ?? "", cell: self)
+        delegate?.onTextEdit(text: textField.text ?? "", cell: self)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -43,22 +44,22 @@ class TextFieldCollectionViewCell: UICollectionViewCell {
     }
     
     func layoutTextField() {
-        contentView.addSubview(allTextField)
+        contentView.addSubview(textField)
         NSLayoutConstraint.activate([
-            allTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.topLeadingTrailing),
-            allTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.topLeadingTrailing),
-            contentView.trailingAnchor.constraint(equalTo: allTextField.trailingAnchor, constant: Constants.topLeadingTrailing),
+            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.topLeadingTrailing),
+            textField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.topLeadingTrailing),
+            contentView.trailingAnchor.constraint(equalTo: textField.trailingAnchor, constant: Constants.topLeadingTrailing),
             contentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
     
     func configure(with viewModel: ViewModel) {
-        allTextField.placeholder = viewModel.placeHolder
-        allTextField.text = viewModel.text
+        textField.placeholder = viewModel.placeHolder
+        textField.text = viewModel.text
         if let errorColor = viewModel.errorColor {
-            allTextField.textColor = errorColor
+            textField.textColor = errorColor
         } else {
-            allTextField.textColor = UIColor.black
+            textField.textColor = UIColor.black
         }
     }
 }
@@ -70,4 +71,5 @@ extension TextFieldCollectionViewCell {
         let placeHolder: String
         var errorColor: UIColor?
     }
+    
 }
