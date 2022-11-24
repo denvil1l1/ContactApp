@@ -58,10 +58,10 @@ class AddListPresenter {
     
     func calculateNotesHeight() -> CGFloat {
         let height = contact.notes.heightWithConstrainedWidth(
-            width: (view?.collectionWidth ?? 0) - NotesTextcollectionView.horizontalSpasing,
+            width: (view?.collectionWidth ?? 0) - TextViewCell.horizontalSpasing,
             font: .systemFont(ofSize: 15)
         )
-        return height + NotesTextcollectionView.verticalSpacing
+        return height + TextViewCell.verticalSpacing
     }
     
     func createColorForElements(contactRes: Bool) -> UIColor {
@@ -205,4 +205,4 @@ class AddListPresenter {
 private typealias TextInputViewModel = TextFieldCollectionViewCell.ViewModel
 private typealias DatePickerViewModel = DatePickerCollectionViewCell.ViewModel
 private typealias SexPickerViewModel = PickerCollectionViewCell.ViewModel
-private typealias TextViewModel = NotesTextcollectionView.ViewModel
+private typealias TextViewModel = TextViewCell.ViewModel

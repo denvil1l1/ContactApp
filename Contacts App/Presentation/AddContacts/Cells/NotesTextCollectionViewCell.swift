@@ -1,12 +1,12 @@
 import UIKit
 
-protocol NotesTextCollectionViewDelegate: AnyObject {
+protocol TextViewCellDelegate: AnyObject {
     func notesTextCellChanged(text: String, cell: UICollectionViewCell)
 }
 
-class NotesTextcollectionView: UICollectionViewCell {
+class TextViewCell: UICollectionViewCell {
     
-    weak var delegate: NotesTextCollectionViewDelegate?
+    weak var delegate: TextViewCellDelegate?
     
     private enum Constants {
         static let textEmpty = ""
@@ -107,7 +107,7 @@ class NotesTextcollectionView: UICollectionViewCell {
     }
 }
 
-extension NotesTextcollectionView {
+extension TextViewCell {
     
     struct ViewModel {
         var text: String
@@ -116,6 +116,6 @@ extension NotesTextcollectionView {
     
 }
 
-extension NotesTextcollectionView: UITextViewDelegate {
+extension TextViewCell: UITextViewDelegate {
     
 }

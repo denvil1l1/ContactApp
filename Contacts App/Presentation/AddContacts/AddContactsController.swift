@@ -38,7 +38,7 @@ class AddContactsController: UIViewController {
         collectionView.register(TextFieldCollectionViewCell.self, forCellWithReuseIdentifier: Constants.textField)
         collectionView.register(DatePickerCollectionViewCell.self, forCellWithReuseIdentifier: Constants.datePicker)
         collectionView.register(PickerCollectionViewCell.self, forCellWithReuseIdentifier: Constants.pickerView)
-        collectionView.register(NotesTextcollectionView.self, forCellWithReuseIdentifier: Constants.textViewNotes)
+        collectionView.register(TextViewCell.self, forCellWithReuseIdentifier: Constants.textViewNotes)
         return collectionView
     }()
     
@@ -169,8 +169,8 @@ extension AddContactsController: UICollectionViewDataSource {
             return cell
         case .notes:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.textViewNotes, for: indexPath)
-            if let viewModel = cellItem.viewModel as? NotesTextcollectionView.ViewModel,
-               let cell = cell as? NotesTextcollectionView {
+            if let viewModel = cellItem.viewModel as? TextViewCell.ViewModel,
+               let cell = cell as? TextViewCell {
                 cell.delegate = self
                 cell.configure(with: viewModel)
             }
@@ -264,7 +264,7 @@ extension AddContactsController: DatePickerCollectionViewCellDelegate {
 
 }
 
-extension AddContactsController: NotesTextCollectionViewDelegate {
+extension AddContactsController: TextViewCellDelegate {
     
     func notesTextCellChanged(text: String, cell: UICollectionViewCell) {
         presenter?.textSave(cellType: .notes, text: text)
@@ -272,7 +272,7 @@ extension AddContactsController: NotesTextCollectionViewDelegate {
             let oldHeight = dataSourse[indexPath.item].cellSize.height
             let newHeight = presenter?.calculateNotesHeight() ?? .zero
             dataSourse[indexPath.item].cellSize.height = newHeight
-            if var viewModel = dataSourse[indexPath.item].viewModel as? NotesTextcollectionView.ViewModel {
+            if var viewModel = dataSourse[indexPath.item].viewModel as? TextViewCell.ViewModel {
                 viewModel.text = text
                 dataSourse[indexPath.item].viewModel = viewModel
             }
