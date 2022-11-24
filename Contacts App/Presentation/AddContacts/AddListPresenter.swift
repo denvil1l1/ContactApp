@@ -1,6 +1,6 @@
 import UIKit
 
-protocol AddListViewInput: AnyObject {
+protocol AddPresenter: AnyObject {
     
     var collectionWidth: CGFloat { get }
     
@@ -14,7 +14,7 @@ enum Constants {
 
 class AddListPresenter {
     
-    weak var view: AddListViewInput?
+    weak var view: AddContactsController?
     private var contact: Contact
     
     init(contact: Contact? = nil) {
@@ -31,7 +31,13 @@ class AddListPresenter {
     }
     
     private var saveHieght: CGFloat = 0
-
+    
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        return formatter
+    }()
+    
     private func validatePhone() -> Bool {
         var isValid = false
         isValid = String.validatedPhone(phoneExamination: contact.phone)
@@ -73,7 +79,7 @@ class AddListPresenter {
         }
         return color
     }
-    
+
     func enumTextCreate (at: Int) -> String? {
         VariantsSex(rawValue: at)?.displayRowValue
     }
@@ -86,18 +92,19 @@ class AddListPresenter {
                   viewModel: TextInputViewModel(
                     text: contact.name,
                     placeHolder: "name",
-                    errorColor: createColorForElements(contactRes:
-                                                        String.validatedName(nameExamination:
-                                                                                        contact.name))
+                    errorColor: createColorForElements(
+                        contactRes: String.validatedName(nameExamination:
+                                                            contact.name)
+                    )
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .surname,
                   viewModel: TextInputViewModel(
                     text: contact.surname,
                     placeHolder: "surname",
-                    errorColor: createColorForElements(contactRes:
-                                                        String.validatedSurname(surnameExamination:
-                                                                                            contact.surname))
+                    errorColor: createColorForElements(
+                        contactRes: String.validatedSurname(surnameExamination:
+                                                            contact.surname))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .middleName,
@@ -110,18 +117,17 @@ class AddListPresenter {
                   viewModel: TextInputViewModel(
                     text: contact.phone,
                     placeHolder: "phone",
-                    errorColor: createColorForElements(contactRes:
-                                                        String.validatedPhone(phoneExamination:
-                                                                                            contact.phone))
+                    errorColor: createColorForElements(
+                        contactRes: String.validatedPhone(phoneExamination:
+                                                            contact.phone))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .email,
                   viewModel: TextInputViewModel(
                     text: contact.email,
                     placeHolder: "email",
-                    errorColor: createColorForElements(contactRes:
-                                                        String.validatedEmail(emailExamination:
-                                                                                            contact.email))
+                    errorColor: createColorForElements(contactRes: String.validatedEmail(emailExamination:
+                                                            contact.email))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .date,
@@ -134,7 +140,7 @@ class AddListPresenter {
                   cellSize: .init(width: width, height: calculateNotesHeight()))
            
             ]
-        view?.setupData(data: dataSource)
+        view?.setupData(with: dataSource)
     }
     
     func pickerSave(text: VariantsSex, cellType: DetailCellType) {
@@ -174,12 +180,6 @@ class AddListPresenter {
         }
     }
     
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy"
-        return formatter
-    }()
-
     func dateString(for date: Date?) -> String? {
         if let date = date {
             return dateFormatter.string(from: date)
@@ -188,7 +188,6 @@ class AddListPresenter {
     }
 
     func save() {
-
         let isValidPhone = validatePhone()
         let isValidEmail = validateEmail()
         let isValidateName = validateName()
@@ -197,12 +196,11 @@ class AddListPresenter {
             createForm()
             view?.showAlert()
             print(contact.sex)
-        } else {
         }
     }
 }
 
-private typealias TextInputViewModel = TextFieldCollectionViewCell.ViewModel
-private typealias DatePickerViewModel = DatePickerCollectionViewCell.ViewModel
-private typealias SexPickerViewModel = PickerCollectionViewCell.ViewModel
+private typealias TextInputViewModel = TextFieldCell.ViewModel
+private typealias DatePickerViewModel = DatePickerCell.ViewModel
+private typealias SexPickerViewModel = PickerCell.ViewModel
 private typealias TextViewModel = TextViewCell.ViewModel

@@ -1,13 +1,13 @@
 import UIKit
 
-protocol DatePickerCollectionViewCellDelegate: AnyObject {
+protocol DatePickerCellDelegate: AnyObject {
     func datePickerCellConvertDate(dateOnPicker: Date) -> String?
     func datePickerCellDateChanged(date: Date, row: UICollectionViewCell)
 }
 
-class DatePickerCollectionViewCell: UICollectionViewCell {
+class DatePickerCell: UICollectionViewCell {
     
-    weak var delegate: DatePickerCollectionViewCellDelegate?
+    weak var delegate: DatePickerCellDelegate?
     
     private lazy var dateTextField: UITextField = {
         let textField = UITextField()
@@ -62,7 +62,7 @@ class DatePickerCollectionViewCell: UICollectionViewCell {
     }
 }
 
-extension DatePickerCollectionViewCell {
+extension DatePickerCell {
     
     struct ViewModel {
         var text: String?

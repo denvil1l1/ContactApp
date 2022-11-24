@@ -5,16 +5,16 @@ protocol PickerCellDelegate: AnyObject {
     func pickerText(at: Int) -> String?
 }
 
-class PickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource {
+class PickerCell: UICollectionViewCell, UIPickerViewDataSource {
     
     weak var delegate: PickerCellDelegate?
     var dataSource: [String] = []
     
-    private lazy var pickerSex: UIPickerView = {
-        let pickerSex = UIPickerView()
-        pickerSex.dataSource = self
-        pickerSex.delegate = self
-        return pickerSex
+    private lazy var picker: UIPickerView = {
+        let picker = UIPickerView()
+        picker.dataSource = self
+        picker.delegate = self
+        return picker
     }()
     
     private lazy var textFieldForPickerView: UITextField = {
@@ -22,7 +22,7 @@ class PickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource {
         textFieldForPickerView.borderStyle = UITextField.BorderStyle.roundedRect
         textFieldForPickerView.backgroundColor = UIColor.systemGray6
         textFieldForPickerView.translatesAutoresizingMaskIntoConstraints = false
-        textFieldForPickerView.inputView = pickerSex
+        textFieldForPickerView.inputView = picker
         return textFieldForPickerView
         
     }()
@@ -50,11 +50,11 @@ class PickerCollectionViewCell: UICollectionViewCell, UIPickerViewDataSource {
         textFieldForPickerView.placeholder = viewModel.placeholder
         textFieldForPickerView.text = viewModel.text
         dataSource = viewModel.pickerData
-        pickerSex.reloadAllComponents()
+        picker.reloadAllComponents()
     }
 }
 
-extension PickerCollectionViewCell {
+extension PickerCell {
     
     struct ViewModel {
         var text: String?
@@ -64,7 +64,7 @@ extension PickerCollectionViewCell {
     
 }
 
-extension PickerCollectionViewCell {
+extension PickerCell {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -76,7 +76,7 @@ extension PickerCollectionViewCell {
     
 }
 
-extension PickerCollectionViewCell: UIPickerViewDelegate {
+extension PickerCell: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         textFieldForPickerView.text = delegate?.pickerText(at: row)

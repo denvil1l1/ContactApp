@@ -24,7 +24,6 @@ class TextViewCell: UICollectionViewCell {
     }
     
     private lazy var placeholderLabel: UILabel = {
-        
         let label = UILabel()
         label.backgroundColor = UIColor.systemGray6
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -40,7 +39,6 @@ class TextViewCell: UICollectionViewCell {
         notesText.layer.cornerRadius = 5
         notesText.layer.borderWidth = 0.3
         notesText.layer.borderColor = .init(gray: 140 / 225, alpha: 1)
-        notesText.delegate = self
         notesText.font = .systemFont(ofSize: 15)
         notesText.isSelectable = true
         notesText.isScrollEnabled = false
@@ -116,6 +114,3 @@ extension TextViewCell {
     
 }
 
-extension TextViewCell: UITextViewDelegate {
-    
-}

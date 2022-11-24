@@ -4,10 +4,6 @@ class AddContactsController: UIViewController {
     
     // MARK: - Constants
     private enum Constants {
-        static let textField = "nameTextCell"
-        static let datePicker = "datePicker"
-        static let pickerView = "pickerView"
-        static let textViewNotes = "textViewNotes"
         static let alertOk = "OK"
         static let alertQuestion = "It seems you made a mistake"
         static let navigationTitle = "Create"
@@ -35,10 +31,10 @@ class AddContactsController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(TextFieldCollectionViewCell.self, forCellWithReuseIdentifier: Constants.textField)
-        collectionView.register(DatePickerCollectionViewCell.self, forCellWithReuseIdentifier: Constants.datePicker)
-        collectionView.register(PickerCollectionViewCell.self, forCellWithReuseIdentifier: Constants.pickerView)
-        collectionView.register(TextViewCell.self, forCellWithReuseIdentifier: Constants.textViewNotes)
+        collectionView.registerAnyCell(TextFieldCell.self)
+        collectionView.registerAnyCell(PickerCell.self)
+        collectionView.registerAnyCell(DatePickerCell.self)
+        collectionView.registerAnyCell(TextViewCell.self)
         return collectionView
     }()
     
@@ -120,7 +116,7 @@ class AddContactsController: UIViewController {
 }
 
 // MARK: - AddListInputDelegate
-extension AddContactsController: AddListInputDelegate {
+extension AddContactsController: AddListViewInput {
     
     func setupData(with cellDataArray: ([ViewModel])) {
         self.dataSourse = cellDataArray
@@ -144,33 +140,29 @@ extension AddContactsController: UICollectionViewDataSource {
         let cellItem = dataSourse[indexPath.item]
         switch cellItem.cellType {
         case .middleName, .name, .email, .phone, .surname:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.textField, for: indexPath)
-            if let viewModel = cellItem.viewModel as? TextFieldCollectionViewCell.ViewModel,
-               let cell = cell as? TextFieldCollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(of: TextFieldCell.self, for: indexPath)
+            if let viewModel = cellItem.viewModel as? TextFieldCell.ViewModel {
                 cell.delegate = self
                 cell.configure(with: viewModel)
             }
             return cell
         case .date:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.datePicker, for: indexPath)
-            if let viewModel = cellItem.viewModel as? DatePickerCollectionViewCell.ViewModel,
-               let cell = cell as? DatePickerCollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(of: DatePickerCell.self, for: indexPath)
+            if let viewModel = cellItem.viewModel as? DatePickerCell.ViewModel {
                 cell.delegate = self
                 cell.configure(with: viewModel)
             }
-            return cell
+                return cell
         case .sex:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.pickerView, for: indexPath)
-            if let viewModel = cellItem.viewModel as? PickerCollectionViewCell.ViewModel,
-               let cell = cell as? PickerCollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(of: PickerCell.self, for: indexPath)
+            if let viewModel = cellItem.viewModel as? PickerCell.ViewModel {
                 cell.delegate = self
                 cell.configure(with: viewModel)
             }
             return cell
         case .notes:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.textViewNotes, for: indexPath)
-            if let viewModel = cellItem.viewModel as? TextViewCell.ViewModel,
-               let cell = cell as? TextViewCell {
+            let cell = collectionView.dequeueReusableCell(of: TextViewCell.self, for: indexPath)
+            if let viewModel = cellItem.viewModel as? TextViewCell.ViewModel {
                 cell.delegate = self
                 cell.configure(with: viewModel)
             }
@@ -181,7 +173,7 @@ extension AddContactsController: UICollectionViewDataSource {
 }
 
 // MARK: OnDelegateAddListDelegate
-extension AddContactsController: AddListViewInput {
+extension AddContactsController: AddPresenter {
     
     var collectionWidth: CGFloat {
         view.bounds.width
@@ -203,7 +195,7 @@ extension AddContactsController: PickerCellDelegate {
 
     func pickerRowSelected(at: Int, cell: UICollectionViewCell) {
         if let indexPath = collectionView.indexPath(for: cell) {
-            if var viewModel = dataSourse[indexPath.item].viewModel as? PickerCollectionViewCell.ViewModel {
+            if var viewModel = dataSourse[indexPath.item].viewModel as? PickerCell.ViewModel {
                 let cellType = dataSourse[indexPath.item].cellType
                 switch cellType {
                 case .sex:
@@ -225,7 +217,7 @@ extension AddContactsController: TextFieldCellDelegate {
     func onTextEdit(text: String, cell: UICollectionViewCell) {
         
         if let indexPath = collectionView.indexPath(for: cell) {
-            if var viewModel = dataSourse[indexPath.item].viewModel as? TextFieldCollectionViewCell.ViewModel {
+            if var viewModel = dataSourse[indexPath.item].viewModel as? TextFieldCell.ViewModel {
                 viewModel.text = text
                 dataSourse[indexPath.item].viewModel = viewModel
             }
@@ -246,11 +238,11 @@ extension AddContactsController: TextFieldCellDelegate {
     
 }
 
-extension AddContactsController: DatePickerCollectionViewCellDelegate {
+extension AddContactsController: DatePickerCellDelegate {
     
     func datePickerCellDateChanged(date: Date, row: UICollectionViewCell) {
         if let indexPath = collectionView.indexPath(for: row) {
-            if var viewModel = dataSourse[indexPath.item].viewModel as? DatePickerCollectionViewCell.ViewModel {
+            if var viewModel = dataSourse[indexPath.item].viewModel as? DatePickerCell.ViewModel {
                 viewModel.text = datePickerCellConvertDate(dateOnPicker: date)
                 dataSourse[indexPath.item].viewModel = viewModel
             }
@@ -291,5 +283,20 @@ extension AddContactsController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return dataSourse[indexPath.item].cellSize
     }
+    
+}
+
+extension UICollectionView {
+    
+    func registerAnyCell<T: UICollectionViewCell>(_ cellClass: T.Type) {
+        register(cellClass.self, forCellWithReuseIdentifier: String(describing: cellClass))
+      }
+  
+    func dequeueReusableCell<CellClass: UICollectionViewCell>(of type: CellClass.Type, for indexPath: IndexPath) -> CellClass {
+        guard let cell = dequeueReusableCell(withReuseIdentifier: String(describing: type.self), for: indexPath) as? CellClass else {
+          fatalError("could not cast UICollectionViewCell at indexPath (section: \(indexPath.section), row: \(indexPath.row)) to expected type \(String(describing: CellClass.self))")
+        }
+        return cell
+      }
     
 }

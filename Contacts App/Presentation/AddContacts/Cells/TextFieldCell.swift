@@ -6,7 +6,7 @@ protocol TextFieldCellDelegate: AnyObject {
     func onTextEdit(text: String, cell: UICollectionViewCell)
 }
 
-class TextFieldCollectionViewCell: UICollectionViewCell {
+class TextFieldCell: UICollectionViewCell {
     
     private enum Constants {
         static let topLeadingTrailing: CGFloat = 20
@@ -64,7 +64,7 @@ class TextFieldCollectionViewCell: UICollectionViewCell {
     }
 }
 
-extension TextFieldCollectionViewCell {
+extension TextFieldCell {
     
     struct ViewModel {
         var text: String
