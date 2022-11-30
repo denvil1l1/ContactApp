@@ -59,7 +59,7 @@ class TextFieldCell: UICollectionViewCell {
         if let errorColor = viewModel.errorColor {
             textField.textColor = errorColor
         } else {
-            textField.textColor = UIColor.black
+            
         }
     }
 }

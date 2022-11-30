@@ -11,7 +11,6 @@ class AddContactsController: UIViewController {
     
     // MARK: - AddPresenter
     var presenter: AddListPresenter?
-    
     class func instantiate() -> UIViewController {
         let vc = AddContactsController()
         let presenter = AddListPresenter()
@@ -78,6 +77,11 @@ class AddContactsController: UIViewController {
         presenter?.createForm()
         notificationCenter()
         layoutCollectionView()
+        var delaults = UserDefaults.standard
+        if let data = delaults.array(forKey: "contacts") {
+        } else {
+            delaults.set([Data](), forKey: "contacts")
+        }
     }
     
     // MARK: - setTapGestureRecognized
@@ -111,7 +115,10 @@ class AddContactsController: UIViewController {
     
     @objc
     func onAddTap() {
-        presenter?.save()
+        if presenter?.save() == true {
+            self.navigationController?.popViewController(animated: true)
+            
+        }
     }
 }
 
@@ -247,6 +254,7 @@ extension AddContactsController: DatePickerCellDelegate {
                 dataSourse[indexPath.item].viewModel = viewModel
             }
             presenter?.dateSave(cellType: .date, date: date)
+            print(date)
         }
     }
     

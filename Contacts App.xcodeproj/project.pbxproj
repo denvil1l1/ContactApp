@@ -152,8 +152,8 @@
 		86B2282829065A8C0095CFD2 /* ContactList */ = {
 			isa = PBXGroup;
 			children = (
-				8650505328F7FA7F0081FC47 /* ContactListController.swift */,
 				86A4490328F97AD400DCFEB3 /* ContactListPresenter.swift */,
+				8650505328F7FA7F0081FC47 /* ContactListController.swift */,
 				86B2282929065B030095CFD2 /* View */,
 			);
 			path = ContactList;

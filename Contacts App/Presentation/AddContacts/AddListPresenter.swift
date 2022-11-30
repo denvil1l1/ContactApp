@@ -14,6 +14,9 @@ enum Constants {
 
 class AddListPresenter {
     
+//    let defaults = UserDefaults.standard
+//    let nameContact = "contacts"
+    
     weak var view: AddContactsController?
     private var contact: Contact
     
@@ -63,10 +66,10 @@ class AddListPresenter {
      }
     
     func calculateNotesHeight() -> CGFloat {
-        let height = contact.notes.heightWithConstrainedWidth(
+        let height = contact.notes?.heightWithConstrainedWidth(
             width: (view?.collectionWidth ?? 0) - TextViewCell.horizontalSpasing,
             font: .systemFont(ofSize: 15)
-        )
+        ) ?? CGFloat()
         return height + TextViewCell.verticalSpacing
     }
     
@@ -136,7 +139,7 @@ class AddListPresenter {
             .init(cellType: .sex,
                   viewModel: SexPickerViewModel(text: contact.sex?.displayRowValue, placeholder: "sex", pickerData: VariantsSex.allCases.map({ $0.displayRowValue })),
                   cellSize: .init(width: width, height: Constants.height)),
-            .init(cellType: .notes, viewModel: TextViewModel(text: contact.notes, placeholder: "notes"),
+            .init(cellType: .notes, viewModel: TextViewModel(text: contact.notes ?? "", placeholder: "notes"),
                   cellSize: .init(width: width, height: calculateNotesHeight()))
            
             ]
@@ -146,7 +149,7 @@ class AddListPresenter {
     func pickerSave(text: VariantsSex, cellType: DetailCellType) {
         switch cellType {
         case .sex:
-            contact.sex = text
+           contact.sex = text
         default:
             break
         }
@@ -187,7 +190,7 @@ class AddListPresenter {
         return nil
     }
 
-    func save() {
+    func save() -> Bool {
         let isValidPhone = validatePhone()
         let isValidEmail = validateEmail()
         let isValidateName = validateName()
@@ -195,8 +198,18 @@ class AddListPresenter {
         if !isValidPhone || !isValidEmail || !isValidSurname || !isValidateName {
             createForm()
             view?.showAlert()
-            print(contact.sex)
+        } else {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            if let data = try? encoder.encode(contact) {
+                let defaults = UserDefaults.standard
+                var test = defaults.object(forKey: "contacts") as? [Data]
+                test?.append(data)
+                defaults.set(test, forKey: "contacts")
+                return true
+            }
         }
+        return false
     }
 }
 

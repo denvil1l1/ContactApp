@@ -23,6 +23,8 @@ class ContactListController: UIViewController {
         return vc
     }
     
+    let defaults = UserDefaults.standard
+    
     var dataSourse: [String] = []
     
     // MARK: - TableViewConfiguration
@@ -53,6 +55,12 @@ class ContactListController: UIViewController {
         layoytTableView()
         configureNavigationBar()
         presenter?.viewisready()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter?.viewisready()
+        tableView.reloadData()
     }
     
     // MARK: - NavigationBar
