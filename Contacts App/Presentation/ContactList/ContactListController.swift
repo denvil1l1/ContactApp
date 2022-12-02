@@ -84,7 +84,7 @@ class ContactListController: UIViewController {
     // MARK: - ButtonForNewController
     @objc
     func onAddTap () {
-        let vc = AddContactsController.instantiate()
+        let vc = AddContactsController.instantiate(state: .create)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }
@@ -110,9 +110,9 @@ extension ContactListController: UITableViewDelegate, UITableViewDataSource {
                                                    preferredStyle: .alert)
             
             let actionYes = UIAlertAction(title: Constants.aletYes, style: .default) { [unowned self]_ in
-                self.dataSourse.remove(at: indexPath.row)
                 self.presenter?.remove(indexPath: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .fade)
+                self.dataSourse.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
             }
             let actionNo = UIAlertAction(title: Constants.aletNo, style: .default) { _ in completed(true) }
             aletController.addAction(actionYes)
@@ -139,6 +139,11 @@ extension ContactListController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return CGFloat(Constants.heightForRowAt)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = AddContactsController.instantiate(model: presenter?.contacts[indexPath.row], state: .edit, indexPath: indexPath.row)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }

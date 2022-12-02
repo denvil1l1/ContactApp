@@ -1,26 +1,49 @@
 import UIKit
 
+enum State {
+    case edit
+    case create
+}
+
 class AddContactsController: UIViewController {
     
     // MARK: - Constants
     private enum Constants {
         static let alertOk = "OK"
+        static let alertNo = "No"
+        static let alertYes = "Yes"
         static let alertQuestion = "It seems you made a mistake"
-        static let navigationTitle = "Create"
+        static let navigationTitleCreate = "Create"
+        static let navigationTitleEdit = "Edit"
     }
+    
+    var index: Int
     
     // MARK: - AddPresenter
     var presenter: AddListPresenter?
-    class func instantiate() -> UIViewController {
-        let vc = AddContactsController()
-        let presenter = AddListPresenter()
+    
+    class func instantiate(model: Contact? = nil, state: State, indexPath: Int? = nil) -> UIViewController {
+        let vc = AddContactsController(state: state, index: indexPath ?? 1)//
+        let presenter = AddListPresenter(contact: model)
         vc.presenter = presenter
         presenter.view = vc
         return vc
     }
     
+    init(state: State, index: Int) {
+        self.state = state
+        self.index = index//
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - AllVarAndLET
     var dataSourse: [ViewModel] = []
+    
+    var state: State = .create
     
     // MARK: - UICollectionView
     private lazy var collectionView: UICollectionView = {
@@ -49,12 +72,23 @@ class AddContactsController: UIViewController {
     
     // MARK: - CnfigureNavigationBar
     private func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .save,
-            target: self,
-            action: #selector(onAddTap)
-        )
-        navigationItem.title = Constants.navigationTitle
+        var titleButton: UIBarButtonItem.SystemItem
+        switch state {
+        case .edit:
+            navigationItem.title = Constants.navigationTitleEdit
+            titleButton = .edit
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: titleButton,
+                target: self,
+                action: #selector(onAddTapEdit) )
+        case .create:
+            navigationItem.title = Constants.navigationTitleCreate
+            titleButton = .save
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: titleButton,
+                target: self,
+                action: #selector(onAddTapCreate) )
+        }
     }
     
     func notificationCenter() {
@@ -77,11 +111,6 @@ class AddContactsController: UIViewController {
         presenter?.createForm()
         notificationCenter()
         layoutCollectionView()
-        var delaults = UserDefaults.standard
-        if let data = delaults.array(forKey: "contacts") {
-        } else {
-            delaults.set([Data](), forKey: "contacts")
-        }
     }
     
     // MARK: - setTapGestureRecognized
@@ -109,15 +138,31 @@ class AddContactsController: UIViewController {
     }
     
     @objc
+    func onAddTapEdit() {
+        let alertController = UIAlertController(title: Constants.alertQuestion,
+                                                message: nil,
+                                                preferredStyle: .alert)
+        let actionOk = UIAlertAction(title: Constants.alertYes, style: .default) { _ in
+            self.presenter?.edit(indexPath: self.index)
+            self.navigationController?.popViewController(animated: true)
+        }
+        let actionNo = UIAlertAction(title: Constants.alertNo, style: .default) { _ in
+            self.navigationController?.popViewController(animated: true)
+        }
+        alertController.addAction(actionOk)
+        alertController.addAction(actionNo)
+        self.present(alertController, animated: true)
+    }
+    
+    @objc
     func collectionViewTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         view.endEditing(true)
     }
     
     @objc
-    func onAddTap() {
+    func onAddTapCreate() {
         if presenter?.save() == true {
             self.navigationController?.popViewController(animated: true)
-            
         }
     }
 }
@@ -129,7 +174,7 @@ extension AddContactsController: AddListViewInput {
         self.dataSourse = cellDataArray
         collectionView.reloadData()
     }
-
+    
 }
 
 // MARK: - CollectionViewDataSource
@@ -159,7 +204,7 @@ extension AddContactsController: UICollectionViewDataSource {
                 cell.delegate = self
                 cell.configure(with: viewModel)
             }
-                return cell
+            return cell
         case .sex:
             let cell = collectionView.dequeueReusableCell(of: PickerCell.self, for: indexPath)
             if let viewModel = cellItem.viewModel as? PickerCell.ViewModel {
@@ -185,21 +230,21 @@ extension AddContactsController: AddPresenter {
     var collectionWidth: CGFloat {
         view.bounds.width
     }
-
+    
     func setupData(data: [ViewModel]) {
         dataSourse = data
         collectionView.reloadData()
     }
-
+    
 }
 
 // MARK: - Extansion
 extension AddContactsController: PickerCellDelegate {
-
+    
     func pickerText(at: Int) -> String? {
         presenter?.enumTextCreate(at: at)
     }
-
+    
     func pickerRowSelected(at: Int, cell: UICollectionViewCell) {
         if let indexPath = collectionView.indexPath(for: cell) {
             if var viewModel = dataSourse[indexPath.item].viewModel as? PickerCell.ViewModel {
@@ -216,7 +261,7 @@ extension AddContactsController: PickerCellDelegate {
             }
         }
     }
-
+    
 }
 
 extension AddContactsController: TextFieldCellDelegate {
@@ -261,7 +306,7 @@ extension AddContactsController: DatePickerCellDelegate {
     func datePickerCellConvertDate(dateOnPicker: Date) -> String? {
         return presenter?.dateString(for: dateOnPicker)
     }
-
+    
 }
 
 extension AddContactsController: TextViewCellDelegate {
@@ -291,20 +336,5 @@ extension AddContactsController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return dataSourse[indexPath.item].cellSize
     }
-    
-}
-
-extension UICollectionView {
-    
-    func registerAnyCell<T: UICollectionViewCell>(_ cellClass: T.Type) {
-        register(cellClass.self, forCellWithReuseIdentifier: String(describing: cellClass))
-      }
-  
-    func dequeueReusableCell<CellClass: UICollectionViewCell>(of type: CellClass.Type, for indexPath: IndexPath) -> CellClass {
-        guard let cell = dequeueReusableCell(withReuseIdentifier: String(describing: type.self), for: indexPath) as? CellClass else {
-          fatalError("could not cast UICollectionViewCell at indexPath (section: \(indexPath.section), row: \(indexPath.row)) to expected type \(String(describing: CellClass.self))")
-        }
-        return cell
-      }
     
 }

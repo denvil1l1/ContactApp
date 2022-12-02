@@ -100,6 +100,9 @@ class TextViewCell: UICollectionViewCell {
     }
     
     func configure(with viewModel: ViewModel) {
+        if !viewModel.text.isEmpty {
+            placeholderLabel.isHidden = true
+        } 
         textView.text = viewModel.text
         placeholderLabel.text = viewModel.placeholder
     }

@@ -6,26 +6,33 @@ final class ContactListPresenter {
     
     // For UserDefaults
     let defaults = UserDefaults.standard
-    let nameContact = "contact"
+    let nameContact = "contacts"
     var contacts: [Contact] {
         get {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             var temp = [Contact]()
-            if let data = defaults.object(forKey: "contacts") as? [Data] {
-                
+            if let data = defaults.value(forKey: "contacts") as? [Data] {
                 data.forEach { item in
                     if let contact = try? decoder.decode(Contact.self, from: item) {
                         temp.append(contact)
                     }
                 }
                 return temp
+            } else {
+                return [Contact]()
             }
-            return []
-        } set {
-            if let data = try? JSONEncoder().encode(newValue) {
-                defaults.set(data, forKey: nameContact)
+        }
+        set {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            var tempArr = [Data]()
+            newValue.forEach { item in
+                if let data = try? encoder.encode(item) {
+                    tempArr.append(data)
+                }
             }
+            defaults.set(tempArr, forKey: "contacts")
         }
     }
     

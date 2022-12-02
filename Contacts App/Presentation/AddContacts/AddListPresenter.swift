@@ -14,9 +14,6 @@ enum Constants {
 
 class AddListPresenter {
     
-//    let defaults = UserDefaults.standard
-//    let nameContact = "contacts"
-    
     weak var view: AddContactsController?
     private var contact: Contact
     
@@ -45,25 +42,25 @@ class AddListPresenter {
         var isValid = false
         isValid = String.validatedPhone(phoneExamination: contact.phone)
         return isValid
-     }
-     
-     private func validateEmail() -> Bool {
-         var isValid = false
-         isValid = String.validatedEmail(emailExamination: contact.email)
-         return isValid
-     }
-     
-     private func validateName() -> Bool {
-         var isValid = false
-         isValid = String.validatedName(nameExamination: contact.name)
-         return isValid
-     }
-     
-     private func validateSurname() -> Bool {
-         var isValid = false
-         isValid = String.validatedSurname(surnameExamination: contact.surname)
-         return isValid
-     }
+    }
+    
+    private func validateEmail() -> Bool {
+        var isValid = false
+        isValid = String.validatedEmail(emailExamination: contact.email)
+        return isValid
+    }
+    
+    private func validateName() -> Bool {
+        var isValid = false
+        isValid = String.validatedName(nameExamination: contact.name)
+        return isValid
+    }
+    
+    private func validateSurname() -> Bool {
+        var isValid = false
+        isValid = String.validatedSurname(surnameExamination: contact.surname)
+        return isValid
+    }
     
     func calculateNotesHeight() -> CGFloat {
         let height = contact.notes?.heightWithConstrainedWidth(
@@ -82,7 +79,7 @@ class AddListPresenter {
         }
         return color
     }
-
+    
     func enumTextCreate (at: Int) -> String? {
         VariantsSex(rawValue: at)?.displayRowValue
     }
@@ -107,7 +104,7 @@ class AddListPresenter {
                     placeHolder: "surname",
                     errorColor: createColorForElements(
                         contactRes: String.validatedSurname(surnameExamination:
-                                                            contact.surname))
+                                                                contact.surname))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .middleName,
@@ -130,7 +127,7 @@ class AddListPresenter {
                     text: contact.email,
                     placeHolder: "email",
                     errorColor: createColorForElements(contactRes: String.validatedEmail(emailExamination:
-                                                            contact.email))
+                                                                                            contact.email))
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .date,
@@ -141,15 +138,15 @@ class AddListPresenter {
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .notes, viewModel: TextViewModel(text: contact.notes ?? "", placeholder: "notes"),
                   cellSize: .init(width: width, height: calculateNotesHeight()))
-           
-            ]
+            
+        ]
         view?.setupData(with: dataSource)
     }
     
     func pickerSave(text: VariantsSex, cellType: DetailCellType) {
         switch cellType {
         case .sex:
-           contact.sex = text
+            contact.sex = text
         default:
             break
         }
@@ -162,6 +159,23 @@ class AddListPresenter {
         default:
             break
         }
+    }
+    
+    func edit(indexPath: Int) -> Bool {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        if let data = try? encoder.encode(contact) {
+            let defaults = UserDefaults.standard
+            var arrayData = defaults.object(forKey: "contacts") as? [Data]
+            if arrayData?[indexPath] == data {
+                return true
+            } else {
+                arrayData?[indexPath] = data
+                defaults.set(arrayData, forKey: "contacts")
+                return false
+            }
+        }
+        return true
     }
     
     func textSave(cellType: DetailCellType, text: String) {
@@ -189,7 +203,7 @@ class AddListPresenter {
         }
         return nil
     }
-
+    
     func save() -> Bool {
         let isValidPhone = validatePhone()
         let isValidEmail = validateEmail()
@@ -203,9 +217,9 @@ class AddListPresenter {
             encoder.dateEncodingStrategy = .iso8601
             if let data = try? encoder.encode(contact) {
                 let defaults = UserDefaults.standard
-                var test = defaults.object(forKey: "contacts") as? [Data]
-                test?.append(data)
-                defaults.set(test, forKey: "contacts")
+                var arrayData = defaults.object(forKey: "contacts") as? [Data]
+                arrayData?.append(data)
+                defaults.set(arrayData, forKey: "contacts")
                 return true
             }
         }

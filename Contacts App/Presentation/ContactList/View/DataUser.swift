@@ -2,7 +2,7 @@ import Foundation
 
 struct Contact {
     
-    var id: String = UUID().uuidString
+    let id: String = UUID().uuidString
     var name: String
     var surname: String
     var middleName: String
