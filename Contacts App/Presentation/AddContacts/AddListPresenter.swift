@@ -4,7 +4,6 @@ protocol AddPresenter: AnyObject {
     
     var collectionWidth: CGFloat { get }
     
-    func showAlert()
     func setupData(data: [ViewModel])
 }
 
@@ -31,6 +30,7 @@ class AddListPresenter {
     }
     
     private var saveHieght: CGFloat = 0
+    private var arrayFirstTextRun = Array(repeating: true, count: 6)
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -38,28 +38,92 @@ class AddListPresenter {
         return formatter
     }()
     
-    private func validatePhone() -> Bool {
-        var isValid = false
-        isValid = String.validatedPhone(phoneExamination: contact.phone)
-        return isValid
+    private func validatePhone() -> (UIColor, Bool) {
+        var color = UIColor()
+        var chek: Bool
+        if arrayFirstTextRun[0] || String.validatedPhone(phoneExamination: contact.phone) {
+            color = Resources.Colors.informationTrue
+            arrayFirstTextRun[0] = false
+            chek = true
+        } else {
+            color = Resources.Colors.informationFalse
+            chek = false
+        }
+        return (color, chek)
     }
     
-    private func validateEmail() -> Bool {
-        var isValid = false
-        isValid = String.validatedEmail(emailExamination: contact.email)
-        return isValid
+    private func validateEmail() -> (UIColor, Bool) {
+        var color = UIColor()
+        var chek: Bool
+        if arrayFirstTextRun[2] || String.validatedEmail(emailExamination: contact.email) {
+            color = Resources.Colors.informationTrue
+            arrayFirstTextRun[2] = false
+            chek = true
+        } else {
+            color = Resources.Colors.informationFalse
+            chek = false
+        }
+        return (color, chek)
     }
     
-    private func validateName() -> Bool {
-        var isValid = false
-        isValid = String.validatedName(nameExamination: contact.name)
-        return isValid
+    private func validateName() -> (UIColor, Bool) {
+        var color = UIColor()
+        var chek: Bool
+        if arrayFirstTextRun[1] || String.validatedName(nameExamination: contact.name) {
+            color = Resources.Colors.informationTrue
+            arrayFirstTextRun[1] = false
+            chek = true
+        } else {
+            color = Resources.Colors.informationFalse
+            chek = false
+        }
+        return (color, chek)
     }
     
-    private func validateSurname() -> Bool {
-        var isValid = false
-        isValid = String.validatedSurname(surnameExamination: contact.surname)
-        return isValid
+    private func validateSurname() -> (UIColor, Bool) {
+        var color = UIColor()
+        var chek: Bool
+        if arrayFirstTextRun[3] || String.validatedSurname(surnameExamination: contact.surname) {
+            color = Resources.Colors.informationTrue
+            arrayFirstTextRun[3] = false
+            chek = true
+        } else {
+            color = Resources.Colors.informationFalse
+            chek = false
+        }
+        return (color, chek)
+    }
+    
+    private func validateOptional() -> UIColor {
+        return Resources.Colors.informationTrue
+    }
+    
+    private func validateDate() -> (UIColor, Bool) {
+        var color: UIColor
+        var chek: Bool
+        if contact.date != nil || arrayFirstTextRun[4] {
+            arrayFirstTextRun[4] = false
+            color = Resources.Colors.informationTrue
+            chek = true
+        } else {
+            color = Resources.Colors.informationFalse
+            chek = false
+        }
+        return (color, chek)
+    }
+    
+    private func validateSex() -> (UIColor, Bool) {
+        var color: UIColor
+        var chek: Bool
+        if contact.sex != nil || arrayFirstTextRun[5] {
+            arrayFirstTextRun[5] = false
+            color = Resources.Colors.informationTrue
+            chek = true
+        } else {
+            color = Resources.Colors.informationFalse
+            chek = false
+        }
+        return (color, chek)
     }
     
     func calculateNotesHeight() -> CGFloat {
@@ -68,16 +132,6 @@ class AddListPresenter {
             font: .systemFont(ofSize: 15)
         ) ?? CGFloat()
         return height + TextViewCell.verticalSpacing
-    }
-    
-    func createColorForElements(contactRes: Bool) -> UIColor {
-        var color: UIColor
-        if contactRes == false {
-            color = Resources.Colors.informationFalse
-        } else {
-            color = Resources.Colors.informationTrue
-        }
-        return color
     }
     
     func enumTextCreate (at: Int) -> String? {
@@ -92,51 +146,44 @@ class AddListPresenter {
                   viewModel: TextInputViewModel(
                     text: contact.name,
                     placeHolder: "name",
-                    errorColor: createColorForElements(
-                        contactRes: String.validatedName(nameExamination:
-                                                            contact.name)
-                    )
+                    errorColor: validateName().0
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .surname,
                   viewModel: TextInputViewModel(
                     text: contact.surname,
                     placeHolder: "surname",
-                    errorColor: createColorForElements(
-                        contactRes: String.validatedSurname(surnameExamination:
-                                                                contact.surname))
+                    errorColor: validateSurname().0
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .middleName,
                   viewModel: TextInputViewModel(
                     text: contact.middleName,
-                    placeHolder: "middle name"
+                    placeHolder: "middle name",
+                    errorColor: validateOptional()
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .phone,
                   viewModel: TextInputViewModel(
                     text: contact.phone,
                     placeHolder: "phone",
-                    errorColor: createColorForElements(
-                        contactRes: String.validatedPhone(phoneExamination:
-                                                            contact.phone))
+                    errorColor: validatePhone().0
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .email,
                   viewModel: TextInputViewModel(
                     text: contact.email,
                     placeHolder: "email",
-                    errorColor: createColorForElements(contactRes: String.validatedEmail(emailExamination:
-                                                                                            contact.email))
+                    errorColor: validateEmail().0
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .date,
-                  viewModel: DatePickerViewModel(text: dateString(for: contact.date), placeHolder: "date"),
+                  viewModel: DatePickerViewModel(text: dateString(for: contact.date), placeHolder: "date", errorColor: validateDate().0),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .sex,
-                  viewModel: SexPickerViewModel(text: contact.sex?.displayRowValue, placeholder: "sex", pickerData: VariantsSex.allCases.map({ $0.displayRowValue })),
+                  viewModel: SexPickerViewModel(text: contact.sex?.displayRowValue, placeholder: "sex", pickerData: VariantsSex.allCases.map({ $0.displayRowValue }), errorColor: validateSex().0),
                   cellSize: .init(width: width, height: Constants.height)),
-            .init(cellType: .notes, viewModel: TextViewModel(text: contact.notes ?? "", placeholder: "notes"),
+            .init(cellType: .notes, viewModel: TextViewModel(text: contact.notes ?? "", placeholder: "notes", errorColor: validateOptional()),
                   cellSize: .init(width: width, height: calculateNotesHeight()))
             
         ]
@@ -162,20 +209,23 @@ class AddListPresenter {
     }
     
     func edit(indexPath: Int) -> Bool {
+        if finalChek() {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
-        if let data = try? encoder.encode(contact) {
-            let defaults = UserDefaults.standard
-            var arrayData = defaults.object(forKey: "contacts") as? [Data]
-            if arrayData?[indexPath] == data {
-                return true
-            } else {
-                arrayData?[indexPath] = data
-                defaults.set(arrayData, forKey: "contacts")
-                return false
+            if let data = try? encoder.encode(contact) {
+                let defaults = UserDefaults.standard
+                var arrayData = defaults.object(forKey: "contacts") as? [Data]
+                if arrayData?[indexPath] == data {
+                } else {
+                    arrayData?[indexPath] = data
+                    defaults.set(arrayData, forKey: "contacts")
+                }
             }
+            return true
+        } else {
+            createForm()
+            return false
         }
-        return true
     }
     
     func textSave(cellType: DetailCellType, text: String) {
@@ -203,16 +253,17 @@ class AddListPresenter {
         }
         return nil
     }
+
+    func finalChek() -> Bool {
+        if validateName().1 && validatePhone().1 && validateEmail().1 && validateSurname().1 && validateDate().1 && validateSex().1 {
+            return true
+        } else {
+            return false
+        }
+    }
     
     func save() -> Bool {
-        let isValidPhone = validatePhone()
-        let isValidEmail = validateEmail()
-        let isValidateName = validateName()
-        let isValidSurname = validateSurname()
-        if !isValidPhone || !isValidEmail || !isValidSurname || !isValidateName {
-            createForm()
-            view?.showAlert()
-        } else {
+        if finalChek() {
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .iso8601
             if let data = try? encoder.encode(contact) {
@@ -225,6 +276,9 @@ class AddListPresenter {
                 defaults.set(arrayData, forKey: "contacts")
                 return true
             }
+        } else {
+            createForm()
+            return false
         }
         return false
     }

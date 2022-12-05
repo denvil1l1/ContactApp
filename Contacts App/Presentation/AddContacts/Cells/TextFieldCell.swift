@@ -18,6 +18,8 @@ class TextFieldCell: UICollectionViewCell {
         var textField = UITextField()
         textField.borderStyle = UITextField.BorderStyle.roundedRect
         textField.backgroundColor = UIColor.systemGray6
+        textField.layer.borderWidth = 1
+        textField.layer.cornerRadius = 5
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
         textField.addTarget(self, action: #selector(textDidBegin), for: .editingDidBegin)
@@ -57,8 +59,8 @@ class TextFieldCell: UICollectionViewCell {
         textField.placeholder = viewModel.placeHolder
         textField.text = viewModel.text
         if let errorColor = viewModel.errorColor {
-            textField.textColor = errorColor
-        } 
+            textField.layer.borderColor = errorColor.cgColor
+        }
     }
 }
 

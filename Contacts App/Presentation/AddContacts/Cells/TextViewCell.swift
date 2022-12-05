@@ -37,7 +37,7 @@ class TextViewCell: UICollectionViewCell {
         notesText.translatesAutoresizingMaskIntoConstraints = false
         notesText.backgroundColor = UIColor.systemGray6
         notesText.layer.cornerRadius = 5
-        notesText.layer.borderWidth = 0.3
+        notesText.layer.borderWidth = 1
         notesText.layer.borderColor = .init(gray: 140 / 225, alpha: 1)
         notesText.font = .systemFont(ofSize: 15)
         notesText.isSelectable = true
@@ -102,7 +102,10 @@ class TextViewCell: UICollectionViewCell {
     func configure(with viewModel: ViewModel) {
         if !viewModel.text.isEmpty {
             placeholderLabel.isHidden = true
-        } 
+        }
+        if let errorColor = viewModel.errorColor {
+            textView.layer.borderColor = errorColor.cgColor
+        }
         textView.text = viewModel.text
         placeholderLabel.text = viewModel.placeholder
     }
@@ -113,6 +116,7 @@ extension TextViewCell {
     struct ViewModel {
         var text: String
         var placeholder: String
+        var errorColor: UIColor?
     }
     
 }

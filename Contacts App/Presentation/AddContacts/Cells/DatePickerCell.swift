@@ -14,6 +14,8 @@ class DatePickerCell: UICollectionViewCell {
         textField.borderStyle = UITextField.BorderStyle.roundedRect
         textField.backgroundColor = UIColor.systemGray6
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.layer.borderWidth = 1
+        textField.layer.cornerRadius = 5
         textField.inputView = datePicker
         return textField
         
@@ -59,6 +61,9 @@ class DatePickerCell: UICollectionViewCell {
     func configure(with viewModel: ViewModel) {
         dateTextField.placeholder = viewModel.placeHolder
         dateTextField.text = viewModel.text
+        if let errorColor = viewModel.errorColor {
+            dateTextField.layer.borderColor = errorColor.cgColor
+        }
     }
 }
 
@@ -67,6 +72,7 @@ extension DatePickerCell {
     struct ViewModel {
         var text: String?
         let placeHolder: String
+        var errorColor: UIColor?
     }
     
 }

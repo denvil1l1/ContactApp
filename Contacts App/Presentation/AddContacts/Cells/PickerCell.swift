@@ -21,6 +21,8 @@ class PickerCell: UICollectionViewCell, UIPickerViewDataSource {
         var textFieldForPickerView = UITextField()
         textFieldForPickerView.borderStyle = UITextField.BorderStyle.roundedRect
         textFieldForPickerView.backgroundColor = UIColor.systemGray6
+        textFieldForPickerView.layer.borderWidth = 1
+        textFieldForPickerView.layer.cornerRadius = 5 
         textFieldForPickerView.translatesAutoresizingMaskIntoConstraints = false
         textFieldForPickerView.inputView = picker
         return textFieldForPickerView
@@ -50,6 +52,9 @@ class PickerCell: UICollectionViewCell, UIPickerViewDataSource {
         textFieldForPickerView.placeholder = viewModel.placeholder
         textFieldForPickerView.text = viewModel.text
         dataSource = viewModel.pickerData
+        if let errorColor = viewModel.errorColor {
+            textFieldForPickerView.layer.borderColor = errorColor.cgColor
+        }
         picker.reloadAllComponents()
     }
 }
@@ -60,6 +65,7 @@ extension PickerCell {
         var text: String?
         let placeholder: String
         let pickerData: [String]
+        var errorColor: UIColor?
     }
     
 }

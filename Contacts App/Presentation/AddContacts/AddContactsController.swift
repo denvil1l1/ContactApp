@@ -12,7 +12,7 @@ class AddContactsController: UIViewController {
         static let alertOk = "OK"
         static let alertNo = "No"
         static let alertYes = "Yes"
-        static let alertQuestion = "It seems you made a mistake"
+        static let alertQuestion = "Do you want to save your changes?"
         static let navigationTitleCreate = "Create"
         static let navigationTitleEdit = "Edit"
     }
@@ -75,6 +75,9 @@ class AddContactsController: UIViewController {
         var titleButton: UIBarButtonItem.SystemItem
         switch state {
         case .edit:
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                               target: self,
+                                                               action: #selector(onAddTapEdit))
             navigationItem.title = Constants.navigationTitleEdit
             titleButton = .edit
             navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -82,6 +85,9 @@ class AddContactsController: UIViewController {
                 target: self,
                 action: #selector(onAddTapEdit) )
         case .create:
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                               target: self,
+                                                               action: #selector(onBackTap))
             navigationItem.title = Constants.navigationTitleCreate
             titleButton = .save
             navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -138,13 +144,14 @@ class AddContactsController: UIViewController {
     }
     
     @objc
-    func onAddTapEdit() {
+    func onBackTap() {
         let alertController = UIAlertController(title: Constants.alertQuestion,
                                                 message: nil,
                                                 preferredStyle: .alert)
         let actionOk = UIAlertAction(title: Constants.alertYes, style: .default) { _ in
-            self.presenter?.edit(indexPath: self.index)
-            self.navigationController?.popViewController(animated: true)
+            if self.presenter?.save() == true {
+                self.navigationController?.popViewController(animated: true)
+            }
         }
         let actionNo = UIAlertAction(title: Constants.alertNo, style: .default) { _ in
             self.navigationController?.popViewController(animated: true)
@@ -152,6 +159,12 @@ class AddContactsController: UIViewController {
         alertController.addAction(actionOk)
         alertController.addAction(actionNo)
         self.present(alertController, animated: true)
+    }
+    @objc
+    func onAddTapEdit() {
+            if self.presenter?.edit(indexPath: self.index) == true {
+                self.navigationController?.popViewController(animated: true)
+            }
     }
     
     @objc
@@ -226,7 +239,7 @@ extension AddContactsController: UICollectionViewDataSource {
 
 // MARK: OnDelegateAddListDelegate
 extension AddContactsController: AddPresenter {
-    
+
     var collectionWidth: CGFloat {
         view.bounds.width
     }
@@ -276,16 +289,6 @@ extension AddContactsController: TextFieldCellDelegate {
             presenter?.textSave(cellType: dataSourse[indexPath.item].cellType, text: text)
         }
         
-    }
-    
-    func showAlert() {
-        
-        let alertController = UIAlertController(title: Constants.alertQuestion,
-                                                message: nil,
-                                                preferredStyle: .alert)
-        let actionOk = UIAlertAction(title: Constants.alertOk, style: .default) { _ in }
-        alertController.addAction(actionOk)
-        self.present(alertController, animated: true)
     }
     
 }

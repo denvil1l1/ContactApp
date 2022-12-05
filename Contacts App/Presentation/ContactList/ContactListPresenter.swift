@@ -51,11 +51,9 @@ final class ContactListPresenter {
     
     // MARK: DeleteForSwipe func
     func remove(indexPath: Int) {
-//        contacts.remove(at: indexPath)
         let defaults = UserDefaults.standard
         var arrayData = defaults.object(forKey: "contacts") as? [Data]
         arrayData?.remove(at: indexPath)
-        print(arrayData)
         defaults.set(arrayData, forKey: "contacts")
     }
     
