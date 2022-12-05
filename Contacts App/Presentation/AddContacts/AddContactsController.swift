@@ -23,7 +23,7 @@ class AddContactsController: UIViewController {
     var presenter: AddListPresenter?
     
     class func instantiate(model: Contact? = nil, state: State, indexPath: Int? = nil) -> UIViewController {
-        let vc = AddContactsController(state: state, index: indexPath ?? 1)//
+        let vc = AddContactsController(state: state, index: indexPath ?? 1)
         let presenter = AddListPresenter(contact: model)
         vc.presenter = presenter
         presenter.view = vc
@@ -32,7 +32,7 @@ class AddContactsController: UIViewController {
     
     init(state: State, index: Int) {
         self.state = state
-        self.index = index//
+        self.index = index
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -77,7 +77,7 @@ class AddContactsController: UIViewController {
         case .edit:
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                                target: self,
-                                                               action: #selector(onAddTapEdit))
+                                                               action: #selector(onBackTapEdit))
             navigationItem.title = Constants.navigationTitleEdit
             titleButton = .edit
             navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -87,7 +87,7 @@ class AddContactsController: UIViewController {
         case .create:
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                                target: self,
-                                                               action: #selector(onBackTap))
+                                                               action: #selector(onBackTapCreate))
             navigationItem.title = Constants.navigationTitleCreate
             titleButton = .save
             navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -144,7 +144,25 @@ class AddContactsController: UIViewController {
     }
     
     @objc
-    func onBackTap() {
+    func onBackTapEdit() {
+        let alertController = UIAlertController(title: Constants.alertQuestion,
+                                                message: nil,
+                                                preferredStyle: .alert)
+        let actionOk = UIAlertAction(title: Constants.alertYes, style: .default) { _ in
+            if self.presenter?.edit(indexPath: self.index) == true {
+                self.navigationController?.popViewController(animated: true)
+            }
+        }
+        let actionNo = UIAlertAction(title: Constants.alertNo, style: .default) { _ in
+            self.navigationController?.popViewController(animated: true)
+        }
+        alertController.addAction(actionOk)
+        alertController.addAction(actionNo)
+        self.present(alertController, animated: true)
+    }
+    
+    @objc
+    func onBackTapCreate() {
         let alertController = UIAlertController(title: Constants.alertQuestion,
                                                 message: nil,
                                                 preferredStyle: .alert)
@@ -160,11 +178,12 @@ class AddContactsController: UIViewController {
         alertController.addAction(actionNo)
         self.present(alertController, animated: true)
     }
+    
     @objc
     func onAddTapEdit() {
-            if self.presenter?.edit(indexPath: self.index) == true {
-                self.navigationController?.popViewController(animated: true)
-            }
+        if self.presenter?.edit(indexPath: self.index) == true {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     @objc
