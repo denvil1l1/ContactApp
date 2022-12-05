@@ -217,8 +217,11 @@ class AddListPresenter {
             encoder.dateEncodingStrategy = .iso8601
             if let data = try? encoder.encode(contact) {
                 let defaults = UserDefaults.standard
-                var arrayData = defaults.object(forKey: "contacts") as? [Data]
-                arrayData?.append(data)
+                var arrayData = [Data]()
+                if let userDefaultsData = defaults.object(forKey: "contacts") as? [Data] {
+                    arrayData += userDefaultsData
+                }
+                arrayData.append(data)
                 defaults.set(arrayData, forKey: "contacts")
                 return true
             }

@@ -14,8 +14,10 @@ final class ContactListPresenter {
             var temp = [Contact]()
             if let data = defaults.value(forKey: "contacts") as? [Data] {
                 data.forEach { item in
-                    if let contact = try? decoder.decode(Contact.self, from: item) {
-                        temp.append(contact)
+                    do {
+                        if let contact = try? decoder.decode(Contact.self, from: item) {
+                            temp.append(contact)
+                        }
                     }
                 }
                 return temp
@@ -49,7 +51,12 @@ final class ContactListPresenter {
     
     // MARK: DeleteForSwipe func
     func remove(indexPath: Int) {
-        contacts.remove(at: indexPath)
+//        contacts.remove(at: indexPath)
+        let defaults = UserDefaults.standard
+        var arrayData = defaults.object(forKey: "contacts") as? [Data]
+        arrayData?.remove(at: indexPath)
+        print(arrayData)
+        defaults.set(arrayData, forKey: "contacts")
     }
     
     // MARK: SerchAndFiltered func

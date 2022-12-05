@@ -111,6 +111,7 @@ extension ContactListController: UITableViewDelegate, UITableViewDataSource {
             
             let actionYes = UIAlertAction(title: Constants.aletYes, style: .default) { [unowned self]_ in
                 self.presenter?.remove(indexPath: indexPath.row)
+                presenter?.contacts
                 self.dataSourse.remove(at: indexPath.row)
                     tableView.deleteRows(at: [indexPath], with: .fade)
             }
