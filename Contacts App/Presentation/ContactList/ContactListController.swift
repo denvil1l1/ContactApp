@@ -84,7 +84,7 @@ class ContactListController: UIViewController {
     // MARK: - ButtonForNewController
     @objc
     func onAddTap () {
-        let vc = AddContactsController.instantiate(state: .create)
+        let vc = AddContactController.instantiate(state: .create)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }
@@ -143,7 +143,7 @@ extension ContactListController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = AddContactsController.instantiate(model: presenter?.contacts[indexPath.row], state: .edit, indexPath: indexPath.row)
+        let vc = AddContactController.instantiate(model: presenter?.contacts[indexPath.row], state: .edit, indexPath: indexPath.row)
         navigationController?.pushViewController(vc, animated: true)
     }
     

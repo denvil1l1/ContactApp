@@ -1,5 +1,10 @@
 import UIKit
 
+protocol AddContactPresenterDelegate: AnyObject {
+    
+    func onAddContactSave(index: Int?, contact: Contact, state: AddContactState)
+}
+
 protocol AddPresenter: AnyObject {
     
     var collectionWidth: CGFloat { get }
@@ -11,12 +16,13 @@ enum Constants {
     static let height = CGFloat(40)
 }
 
-class AddListPresenter {
-    
-    weak var view: AddContactsController?
+class AddContactPresenter {
+    private let contactListPresenter: ContactListPresenter
+    weak var delegate: AddContactPresenterDelegate?
+    weak var view: AddContactController?
     private var contact: Contact
-    
-    init(contact: Contact? = nil) {
+    init(contact: Contact? = nil, contactListPresenter: ContactListPresenter) {
+        self.contactListPresenter = contactListPresenter
         self.contact = contact ?? .init(
             name: "",
             surname: "",
@@ -30,7 +36,22 @@ class AddListPresenter {
     }
     
     private var saveHieght: CGFloat = 0
-    private var arrayFirstTextRun = Array(repeating: true, count: 6)
+    private var arrayFirstTextRun = ["phone": true,
+                                     "email": true,
+                                     "name": true,
+                                     "date": true,
+                                     "surname": true,
+                                     "sex": true
+    ]
+    
+    func validateArray() -> [String: Bool] {
+        let arrayValidate = ["phone": String.validatedPhone(phoneExamination: contact.phone),
+                             "name": String.validatedName(nameExamination: contact.name),
+                             "email": String.validatedEmail(emailExamination: contact.email),
+                             "surname": String.validatedSurname(surnameExamination: contact.surname)
+        ]
+        return arrayValidate
+    }
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -38,54 +59,12 @@ class AddListPresenter {
         return formatter
     }()
     
-    private func validatePhone() -> (UIColor, Bool) {
+    private func validateAll(name: String) -> (UIColor, Bool) {
         var color = UIColor()
         var chek: Bool
-        if arrayFirstTextRun[0] || String.validatedPhone(phoneExamination: contact.phone) {
+        if arrayFirstTextRun[name] ?? false || validateArray()[name] ?? true {
             color = Resources.Colors.informationTrue
-            arrayFirstTextRun[0] = false
-            chek = true
-        } else {
-            color = Resources.Colors.informationFalse
-            chek = false
-        }
-        return (color, chek)
-    }
-    
-    private func validateEmail() -> (UIColor, Bool) {
-        var color = UIColor()
-        var chek: Bool
-        if arrayFirstTextRun[2] || String.validatedEmail(emailExamination: contact.email) {
-            color = Resources.Colors.informationTrue
-            arrayFirstTextRun[2] = false
-            chek = true
-        } else {
-            color = Resources.Colors.informationFalse
-            chek = false
-        }
-        return (color, chek)
-    }
-    
-    private func validateName() -> (UIColor, Bool) {
-        var color = UIColor()
-        var chek: Bool
-        if arrayFirstTextRun[1] || String.validatedName(nameExamination: contact.name) {
-            color = Resources.Colors.informationTrue
-            arrayFirstTextRun[1] = false
-            chek = true
-        } else {
-            color = Resources.Colors.informationFalse
-            chek = false
-        }
-        return (color, chek)
-    }
-    
-    private func validateSurname() -> (UIColor, Bool) {
-        var color = UIColor()
-        var chek: Bool
-        if arrayFirstTextRun[3] || String.validatedSurname(surnameExamination: contact.surname) {
-            color = Resources.Colors.informationTrue
-            arrayFirstTextRun[3] = false
+            arrayFirstTextRun[name] = false
             chek = true
         } else {
             color = Resources.Colors.informationFalse
@@ -99,24 +78,24 @@ class AddListPresenter {
     }
     
     private func validateDate() -> (UIColor, Bool) {
-        var color: UIColor
-        var chek: Bool
-        if contact.date != nil || arrayFirstTextRun[4] {
-            arrayFirstTextRun[4] = false
-            color = Resources.Colors.informationTrue
-            chek = true
-        } else {
-            color = Resources.Colors.informationFalse
-            chek = false
+            var color: UIColor
+            var chek: Bool
+            if contact.date != nil || arrayFirstTextRun["date"] ?? false {
+                arrayFirstTextRun["date"] = false
+                color = Resources.Colors.informationTrue
+                chek = true
+            } else {
+                color = Resources.Colors.informationFalse
+                chek = false
+            }
+            return (color, chek)
         }
-        return (color, chek)
-    }
-    
+        
     private func validateSex() -> (UIColor, Bool) {
         var color: UIColor
         var chek: Bool
-        if contact.sex != nil || arrayFirstTextRun[5] {
-            arrayFirstTextRun[5] = false
+        if contact.sex != nil || arrayFirstTextRun["sex"] ?? false {
+            arrayFirstTextRun["sex"] = false
             color = Resources.Colors.informationTrue
             chek = true
         } else {
@@ -125,7 +104,7 @@ class AddListPresenter {
         }
         return (color, chek)
     }
-    
+
     func calculateNotesHeight() -> CGFloat {
         let height = contact.notes?.heightWithConstrainedWidth(
             width: (view?.collectionWidth ?? 0) - TextViewCell.horizontalSpasing,
@@ -146,14 +125,14 @@ class AddListPresenter {
                   viewModel: TextInputViewModel(
                     text: contact.name,
                     placeHolder: "name",
-                    errorColor: validateName().0
+                    errorColor: validateAll(name: "name").0
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .surname,
                   viewModel: TextInputViewModel(
                     text: contact.surname,
                     placeHolder: "surname",
-                    errorColor: validateSurname().0
+                    errorColor: validateAll(name: "surname").0
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .middleName,
@@ -167,14 +146,14 @@ class AddListPresenter {
                   viewModel: TextInputViewModel(
                     text: contact.phone,
                     placeHolder: "phone",
-                    errorColor: validatePhone().0
+                    errorColor: validateAll(name: "phone").0
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .email,
                   viewModel: TextInputViewModel(
                     text: contact.email,
                     placeHolder: "email",
-                    errorColor: validateEmail().0
+                    errorColor: validateAll(name: "email").0
                   ),
                   cellSize: .init(width: width, height: Constants.height)),
             .init(cellType: .date,
@@ -188,6 +167,34 @@ class AddListPresenter {
             
         ]
         view?.setupData(with: dataSource)
+    }
+    
+    func edit(indexPath: Int, startModel: Contact?) -> Bool {
+        if validateBeforeSaving() {
+            return true
+        } else {
+            createForm()
+            return false
+        }
+    }
+
+    func textSave(cellType: DetailCellType, text: String) {
+        switch cellType {
+        case .name:
+            contact.name = text
+        case .surname:
+            contact.surname = text
+        case .middleName:
+            contact.middleName = text
+        case .phone:
+            contact.phone = text
+        case .email:
+            contact.email = text
+        case .notes:
+            contact.notes = text
+        default:
+            break
+        }
     }
     
     func pickerSave(text: VariantsSex, cellType: DetailCellType) {
@@ -208,82 +215,38 @@ class AddListPresenter {
         }
     }
     
-    func edit(indexPath: Int) -> Bool {
-        if finalChek() {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-            if let data = try? encoder.encode(contact) {
-                let defaults = UserDefaults.standard
-                var arrayData = defaults.object(forKey: "contacts") as? [Data]
-                if arrayData?[indexPath] == data {
-                } else {
-                    arrayData?[indexPath] = data
-                    defaults.set(arrayData, forKey: "contacts")
-                }
-            }
-            return true
-        } else {
-            createForm()
-            return false
-        }
-    }
-    
-    func textSave(cellType: DetailCellType, text: String) {
-        switch cellType {
-        case .name:
-            contact.name = text
-        case .surname:
-            contact.surname = text
-        case .middleName:
-            contact.middleName = text
-        case .phone:
-            contact.phone = text
-        case .email:
-            contact.email = text
-        case .notes:
-            contact.notes = text
-        default:
-            break
-        }
-    }
-    
     func dateString(for date: Date?) -> String? {
         if let date = date {
             return dateFormatter.string(from: date)
         }
         return nil
     }
+    
+    func chekChanges(index: Int, contact: Contact?) {
+        if self.contact.name != contact?.name
+        {
+            view?.showAlert()
+        } else {
+            view?.saveAndEditContact()
+        }
+    }
 
-    func finalChek() -> Bool {
-        if validateName().1 && validatePhone().1 && validateEmail().1 && validateSurname().1 && validateDate().1 && validateSex().1 {
+    func validateBeforeSaving() -> Bool {
+        if validateAll(name: "name").1 && validateAll(name: "surname").1 && validateAll(name: "phone").1 && validateAll(name: "email").1 && validateDate().1 && validateSex().1 {
             return true
         } else {
             return false
         }
     }
     
-    func save() -> Bool {
-        if finalChek() {
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .iso8601
-            if let data = try? encoder.encode(contact) {
-                let defaults = UserDefaults.standard
-                var arrayData = [Data]()
-                if let userDefaultsData = defaults.object(forKey: "contacts") as? [Data] {
-                    arrayData += userDefaultsData
-                }
-                arrayData.append(data)
-                defaults.set(arrayData, forKey: "contacts")
-                return true
-            }
+    func save(index: Int? = nil, state: AddContactState, contact: Contact?) {
+        if validateBeforeSaving() {
+        delegate?.onAddContactSave(index: index, contact: self.contact, state: view?.state ?? .edit)
         } else {
             createForm()
-            return false
         }
-        return false
     }
 }
-
 private typealias TextInputViewModel = TextFieldCell.ViewModel
 private typealias DatePickerViewModel = DatePickerCell.ViewModel
 private typealias SexPickerViewModel = PickerCell.ViewModel

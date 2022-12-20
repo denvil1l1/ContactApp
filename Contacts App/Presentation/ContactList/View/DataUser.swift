@@ -1,8 +1,7 @@
 import Foundation
 
 struct Contact {
-    
-    let id: String = UUID().uuidString
+
     var name: String
     var surname: String
     var middleName: String

@@ -1,11 +1,11 @@
 import UIKit
 
-enum State {
+enum AddContactState {
     case edit
     case create
 }
 
-class AddContactsController: UIViewController {
+class AddContactController: UIViewController {
     
     // MARK: - Constants
     private enum Constants {
@@ -18,21 +18,25 @@ class AddContactsController: UIViewController {
     }
     
     var index: Int
+    var createValue: Contact?
     
     // MARK: - AddPresenter
-    var presenter: AddListPresenter?
+    var presenter: AddContactPresenter?
     
-    class func instantiate(model: Contact? = nil, state: State, indexPath: Int? = nil) -> UIViewController {
-        let vc = AddContactsController(state: state, index: indexPath ?? 1)
-        let presenter = AddListPresenter(contact: model)
+    class func instantiate(model: Contact? = nil, state: AddContactState, indexPath: Int? = nil) -> UIViewController {
+        let vc = AddContactController(state: state, index: indexPath ?? 1, model: model)
+        let delegate = ContactListPresenter()
+        let presenter = AddContactPresenter(contact: model, contactListPresenter: delegate)
         vc.presenter = presenter
         presenter.view = vc
+        presenter.delegate = delegate
         return vc
     }
     
-    init(state: State, index: Int) {
+    init(state: AddContactState, index: Int, model: Contact? = nil) {
         self.state = state
         self.index = index
+        self.createValue = model
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,7 +47,7 @@ class AddContactsController: UIViewController {
     // MARK: - AllVarAndLET
     var dataSourse: [ViewModel] = []
     
-    var state: State = .create
+    var state: AddContactState = .create
     
     // MARK: - UICollectionView
     private lazy var collectionView: UICollectionView = {
@@ -72,29 +76,11 @@ class AddContactsController: UIViewController {
     
     // MARK: - CnfigureNavigationBar
     private func configureNavigationBar() {
-        var titleButton: UIBarButtonItem.SystemItem
-        switch state {
-        case .edit:
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                               target: self,
-                                                               action: #selector(onBackTapEdit))
-            navigationItem.title = Constants.navigationTitleEdit
-            titleButton = .edit
-            navigationItem.rightBarButtonItem = UIBarButtonItem(
-                barButtonSystemItem: titleButton,
-                target: self,
-                action: #selector(onAddTapEdit) )
-        case .create:
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                               target: self,
-                                                               action: #selector(onBackTapCreate))
-            navigationItem.title = Constants.navigationTitleCreate
-            titleButton = .save
-            navigationItem.rightBarButtonItem = UIBarButtonItem(
-                barButtonSystemItem: titleButton,
-                target: self,
-                action: #selector(onAddTapCreate) )
-        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save,
+                                                            target: self,
+                                                            action: #selector(saveAndEditContact))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(saveAndEditBack))
+        
     }
     
     func notificationCenter() {
@@ -144,45 +130,10 @@ class AddContactsController: UIViewController {
     }
     
     @objc
-    func onBackTapEdit() {
-        let alertController = UIAlertController(title: Constants.alertQuestion,
-                                                message: nil,
-                                                preferredStyle: .alert)
-        let actionOk = UIAlertAction(title: Constants.alertYes, style: .default) { _ in
-            if self.presenter?.edit(indexPath: self.index) == true {
-                self.navigationController?.popViewController(animated: true)
-            }
-        }
-        let actionNo = UIAlertAction(title: Constants.alertNo, style: .default) { _ in
-            self.navigationController?.popViewController(animated: true)
-        }
-        alertController.addAction(actionOk)
-        alertController.addAction(actionNo)
-        self.present(alertController, animated: true)
-    }
-    
-    @objc
-    func onBackTapCreate() {
-        let alertController = UIAlertController(title: Constants.alertQuestion,
-                                                message: nil,
-                                                preferredStyle: .alert)
-        let actionOk = UIAlertAction(title: Constants.alertYes, style: .default) { _ in
-            if self.presenter?.save() == true {
-                self.navigationController?.popViewController(animated: true)
-            }
-        }
-        let actionNo = UIAlertAction(title: Constants.alertNo, style: .default) { _ in
-            self.navigationController?.popViewController(animated: true)
-        }
-        alertController.addAction(actionOk)
-        alertController.addAction(actionNo)
-        self.present(alertController, animated: true)
-    }
-    
-    @objc
-    func onAddTapEdit() {
-        if self.presenter?.edit(indexPath: self.index) == true {
-            self.navigationController?.popViewController(animated: true)
+    func saveAndEditContact() {
+        presenter?.save(index: self.index, state: state, contact: createValue)
+        if presenter?.validateBeforeSaving() == true {
+            _ = navigationController?.popViewController(animated: true)
         }
     }
     
@@ -192,15 +143,32 @@ class AddContactsController: UIViewController {
     }
     
     @objc
-    func onAddTapCreate() {
-        if presenter?.save() == true {
-            self.navigationController?.popViewController(animated: true)
+    func saveAndEditBack() {
+        presenter?.chekChanges(index: index, contact: createValue)
+    }
+    @objc
+    func showAlert() {
+        let aletController = UIAlertController(title: Constants.alertQuestion,
+                                               message: "",
+                                               preferredStyle: .alert)
+        
+        let actionYes = UIAlertAction(title: Constants.alertYes, style: .default) { [unowned self]_ in
+            presenter?.save(index: self.index, state: state, contact: createValue)
+            if presenter?.validateBeforeSaving() == true {
+                _ = navigationController?.popViewController(animated: true)
+            }
         }
+        let actionNo = UIAlertAction(title: Constants.alertNo, style: .default) { [unowned self]_ in
+            _ = navigationController?.popViewController(animated: true)
+        }
+        aletController.addAction(actionYes)
+        aletController.addAction(actionNo)
+        self.present(aletController, animated: true)
     }
 }
 
 // MARK: - AddListInputDelegate
-extension AddContactsController: AddListViewInput {
+extension AddContactController: AddListViewInput {
     
     func setupData(with cellDataArray: ([ViewModel])) {
         self.dataSourse = cellDataArray
@@ -210,7 +178,7 @@ extension AddContactsController: AddListViewInput {
 }
 
 // MARK: - CollectionViewDataSource
-extension AddContactsController: UICollectionViewDataSource {
+extension AddContactController: UICollectionViewDataSource {
     
     // MARK: - collectionView
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -257,7 +225,7 @@ extension AddContactsController: UICollectionViewDataSource {
 }
 
 // MARK: OnDelegateAddListDelegate
-extension AddContactsController: AddPresenter {
+extension AddContactController: AddPresenter {
 
     var collectionWidth: CGFloat {
         view.bounds.width
@@ -271,7 +239,7 @@ extension AddContactsController: AddPresenter {
 }
 
 // MARK: - Extansion
-extension AddContactsController: PickerCellDelegate {
+extension AddContactController: PickerCellDelegate {
     
     func pickerText(at: Int) -> String? {
         presenter?.enumTextCreate(at: at)
@@ -296,7 +264,7 @@ extension AddContactsController: PickerCellDelegate {
     
 }
 
-extension AddContactsController: TextFieldCellDelegate {
+extension AddContactController: TextFieldCellDelegate {
     
     func onTextEdit(text: String, cell: UICollectionViewCell) {
         
@@ -312,7 +280,7 @@ extension AddContactsController: TextFieldCellDelegate {
     
 }
 
-extension AddContactsController: DatePickerCellDelegate {
+extension AddContactController: DatePickerCellDelegate {
     
     func datePickerCellDateChanged(date: Date, row: UICollectionViewCell) {
         if let indexPath = collectionView.indexPath(for: row) {
@@ -331,7 +299,7 @@ extension AddContactsController: DatePickerCellDelegate {
     
 }
 
-extension AddContactsController: TextViewCellDelegate {
+extension AddContactController: TextViewCellDelegate {
     
     func notesTextCellChanged(text: String, cell: UICollectionViewCell) {
         presenter?.textSave(cellType: .notes, text: text)
@@ -351,7 +319,7 @@ extension AddContactsController: TextViewCellDelegate {
     
 }
 
-extension AddContactsController: UICollectionViewDelegateFlowLayout {
+extension AddContactController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,

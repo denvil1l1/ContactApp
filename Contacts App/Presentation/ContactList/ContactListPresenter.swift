@@ -1,9 +1,6 @@
 import Foundation
-
 final class ContactListPresenter {
-    
     weak var view: ContactListViewInput?
-    
     // For UserDefaults
     let defaults = UserDefaults.standard
     let nameContact = "contacts"
@@ -11,36 +8,19 @@ final class ContactListPresenter {
         get {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
-            var temp = [Contact]()
-            if let data = defaults.value(forKey: "contacts") as? [Data] {
-                data.forEach { item in
-                    do {
-                        if let contact = try? decoder.decode(Contact.self, from: item) {
-                            temp.append(contact)
-                        }
-                    }
-                }
-                return temp
-            } else {
-                return [Contact]()
+            if let data = defaults.value(forKey: "contacts" ) as? Data,
+               let contacts = try? decoder.decode([Contact].self, from: data) {
+                return contacts
             }
+            return[]
         }
         set {
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .iso8601
-            var tempArr = [Data]()
-            newValue.forEach { item in
-                if let data = try? encoder.encode(item) {
-                    tempArr.append(data)
-                }
+            if let data = try? encoder.encode(newValue) {
+                defaults.set(data, forKey: "contacts")
             }
-            defaults.set(tempArr, forKey: "contacts")
         }
-    }
-    
-    // MARK: saveContact func
-    func saveContact(contact: Contact) {
-        contacts.insert(contact, at: 0)
     }
     
     // MARK: ViewISReady func
@@ -51,10 +31,7 @@ final class ContactListPresenter {
     
     // MARK: DeleteForSwipe func
     func remove(indexPath: Int) {
-        let defaults = UserDefaults.standard
-        var arrayData = defaults.object(forKey: "contacts") as? [Data]
-        arrayData?.remove(at: indexPath)
-        defaults.set(arrayData, forKey: "contacts")
+        contacts.remove(at: indexPath)
     }
     
     // MARK: SerchAndFiltered func
@@ -72,6 +49,25 @@ final class ContactListPresenter {
             }
             .map { $0.name + " " + $0.surname }
         view?.setupData(with: testData)
+    }
+    
+}
+
+extension ContactListPresenter: AddContactPresenterDelegate {
+    
+    func onAddContactEdit(contact: Contact) {
+        
+    }
+    
+    func onAddContactSave(index: Int? = nil, contact: Contact, state: AddContactState) {
+        switch state {
+        case .create:
+            contacts.append(contact)
+        case .edit:
+            if let index {
+                contacts[index] = contact
+            }
+        }
     }
     
 }

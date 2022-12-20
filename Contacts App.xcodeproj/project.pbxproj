@@ -15,11 +15,11 @@
 		8650505428F7FA7F0081FC47 /* ContactListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650505328F7FA7F0081FC47 /* ContactListController.swift */; };
 		8650505828F857830081FC47 /* DataUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650505728F857830081FC47 /* DataUser.swift */; };
 		867DE762291298D0008885E3 /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867DE761291298D0008885E3 /* TextViewCell.swift */; };
-		869253D329082A2500E66AC1 /* AddContactsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869253D229082A2500E66AC1 /* AddContactsController.swift */; };
-		869253D529082B3A00E66AC1 /* AddListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869253D429082B3A00E66AC1 /* AddListPresenter.swift */; };
-		8694757E29090AB300E81586 /* AddListDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694757D29090AB300E81586 /* AddListDelegate.swift */; };
+		869253D329082A2500E66AC1 /* AddContactController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869253D229082A2500E66AC1 /* AddContactController.swift */; };
+		869253D529082B3A00E66AC1 /* AddContactPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869253D429082B3A00E66AC1 /* AddContactPresenter.swift */; };
+		8694757E29090AB300E81586 /* AddListViewInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694757D29090AB300E81586 /* AddListViewInput.swift */; };
 		869475802909290800E81586 /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694757F2909290800E81586 /* TextFieldCell.swift */; };
-		86947582290960BA00E81586 /* CreateContactDataUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86947581290960BA00E81586 /* CreateContactDataUser.swift */; };
+		86947582290960BA00E81586 /* AddContactModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86947581290960BA00E81586 /* AddContactModels.swift */; };
 		869537372937439C001B20DC /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869537362937439C001B20DC /* CollectionView.swift */; };
 		86960E932910F21B00E574CC /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86960E922910F21B00E574CC /* DatePickerCell.swift */; };
 		86960E9529113FD100E574CC /* PickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86960E9429113FD100E574CC /* PickerCell.swift */; };
@@ -64,11 +64,11 @@
 		8650505328F7FA7F0081FC47 /* ContactListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListController.swift; sourceTree = "<group>"; };
 		8650505728F857830081FC47 /* DataUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DataUser.swift; path = "Contacts App/Presentation/ContactList/View/DataUser.swift"; sourceTree = SOURCE_ROOT; };
 		867DE761291298D0008885E3 /* TextViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewCell.swift; sourceTree = "<group>"; };
-		869253D229082A2500E66AC1 /* AddContactsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactsController.swift; sourceTree = "<group>"; };
-		869253D429082B3A00E66AC1 /* AddListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListPresenter.swift; sourceTree = "<group>"; };
-		8694757D29090AB300E81586 /* AddListDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListDelegate.swift; sourceTree = "<group>"; };
+		869253D229082A2500E66AC1 /* AddContactController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactController.swift; sourceTree = "<group>"; };
+		869253D429082B3A00E66AC1 /* AddContactPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactPresenter.swift; sourceTree = "<group>"; };
+		8694757D29090AB300E81586 /* AddListViewInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListViewInput.swift; sourceTree = "<group>"; };
 		8694757F2909290800E81586 /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
-		86947581290960BA00E81586 /* CreateContactDataUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateContactDataUser.swift; sourceTree = "<group>"; };
+		86947581290960BA00E81586 /* AddContactModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactModels.swift; sourceTree = "<group>"; };
 		869537362937439C001B20DC /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		86960E922910F21B00E574CC /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
 		86960E9429113FD100E574CC /* PickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerCell.swift; sourceTree = "<group>"; };
@@ -143,8 +143,8 @@
 		869253D1290829FC00E66AC1 /* AddContacts */ = {
 			isa = PBXGroup;
 			children = (
-				869253D429082B3A00E66AC1 /* AddListPresenter.swift */,
-				869253D229082A2500E66AC1 /* AddContactsController.swift */,
+				869253D429082B3A00E66AC1 /* AddContactPresenter.swift */,
+				869253D229082A2500E66AC1 /* AddContactController.swift */,
 				8644687529226A67005C8715 /* Cells */,
 				86F99D0028F7682C0005C253 /* View */,
 			);
@@ -270,8 +270,8 @@
 		86F99D0028F7682C0005C253 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				8694757D29090AB300E81586 /* AddListDelegate.swift */,
-				86947581290960BA00E81586 /* CreateContactDataUser.swift */,
+				8694757D29090AB300E81586 /* AddListViewInput.swift */,
+				86947581290960BA00E81586 /* AddContactModels.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -511,19 +511,19 @@
 			files = (
 				869537372937439C001B20DC /* CollectionView.swift in Sources */,
 				86A4490628F97DB200DCFEB3 /* ContactListViewInput.swift in Sources */,
-				869253D329082A2500E66AC1 /* AddContactsController.swift in Sources */,
+				869253D329082A2500E66AC1 /* AddContactController.swift in Sources */,
 				869475802909290800E81586 /* TextFieldCell.swift in Sources */,
 				8650505428F7FA7F0081FC47 /* ContactListController.swift in Sources */,
 				8650505828F857830081FC47 /* DataUser.swift in Sources */,
 				86960E9529113FD100E574CC /* PickerCell.swift in Sources */,
-				8694757E29090AB300E81586 /* AddListDelegate.swift in Sources */,
+				8694757E29090AB300E81586 /* AddListViewInput.swift in Sources */,
 				86CBFC0A28F75D2F0021E6AB /* AppDelegate.swift in Sources */,
 				86CBFC0C28F75D2F0021E6AB /* SceneDelegate.swift in Sources */,
 				8644687429226445005C8715 /* StringOptions.swift in Sources */,
-				869253D529082B3A00E66AC1 /* AddListPresenter.swift in Sources */,
+				869253D529082B3A00E66AC1 /* AddContactPresenter.swift in Sources */,
 				8650504C28F7ED420081FC47 /* Resources.swift in Sources */,
 				86960E932910F21B00E574CC /* DatePickerCell.swift in Sources */,
-				86947582290960BA00E81586 /* CreateContactDataUser.swift in Sources */,
+				86947582290960BA00E81586 /* AddContactModels.swift in Sources */,
 				867DE762291298D0008885E3 /* TextViewCell.swift in Sources */,
 				8650504E28F7EE320081FC47 /* UIColor + hex.swift in Sources */,
 				86A4490428F97AD400DCFEB3 /* ContactListPresenter.swift in Sources */,
