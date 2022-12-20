@@ -39,7 +39,7 @@ extension String {
     
     static func validatedName(nameExamination: String) -> Bool {
         let name = nameExamination.trimmingCharacters(in: CharacterSet.whitespaces)
-        let regex = "[A-Z0-9a-z]{1,}"
+        let regex = "[A-Z0-9a-zА-Яа-я]{1,}"
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         let result = predicate.evaluate(with: name)
         return result
@@ -47,7 +47,7 @@ extension String {
     
     static func validatedSurname(surnameExamination: String) -> Bool {
         let surname = surnameExamination.trimmingCharacters(in: CharacterSet.whitespaces)
-        let regex = "[A-Z0-9a-z]{1,}"
+        let regex = "[A-Z0-9a-zА-Яа-я]{1,}"
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         let result = predicate.evaluate(with: surname)
         return result
