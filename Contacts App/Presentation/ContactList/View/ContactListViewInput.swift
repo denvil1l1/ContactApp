@@ -1,4 +1,6 @@
 import Foundation
-protocol ViewInputDelegate: AnyObject {
+
+protocol ContactListViewInput: AnyObject {
+    
     func setupData(with arrayContactsController: ([String]))
 }
